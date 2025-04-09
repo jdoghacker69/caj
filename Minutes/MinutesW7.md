@@ -17,14 +17,15 @@
 ### Current Items:
 - Exercise 1 has been completed
 - The README needs to be worked on by each member
-- Exercise 2 
-- Exercise 3 can be started by 
+- Exercise 2 is half finished
+- Exercise 3 can be started by Connor
+- Come up with a group name
 
 ### New Items:
-- Connor focuses on 
-- Jasper keeps progressing on exercise 2 of the lab document
-- Aurora focuses on
-- Every member contributes to the README file
+- Name chosen to be ...
+- Connor focuses on exercise 3
+- Jasper keeps progressing on exercise 2
+- Aurora works on the README file
 
 ### Next Meeting Date:
-09/04/2025
+../04/2025
