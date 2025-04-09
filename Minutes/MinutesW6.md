@@ -17,7 +17,7 @@
 - Assign roles of who does what exercise
 
 ### New Items:
-- Jasper works on exercise 3 of the lab document
+- Jasper works on exercise 2 of the lab document
 - Aurora works on exercise 1 of the lab document
 
 ### Next Meeting Date:
