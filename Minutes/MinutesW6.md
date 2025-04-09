@@ -1,26 +1,24 @@
-# MTRX Group #10 - "SpiderBytes"
-##  Date - 26/02/2025
+# MTRX Group #11 - "Caj"
+##  Date - 02/04/2025
 ### Present:
-- Lachie
-- Shiyao
+- Jasper
 - Aurora
 
 ### Meeting Purpose:
-- Get to know each group member and why they chose mechatronics for a degree
-- Create a github repository which each member has access to
-- Learn how to navigate STM32CubeIDE
+- Setup the github and project workspaces
+- Make a start on the second project (lab 2)
 
 ### Previous Actions:
-- Everyone has downloaded the IDE
-- Everyone has created github accounts
+- Read through the lab document
 
 ### Current Items:
-- Self introductions
-- Accept github repo invite
-- Watch the lab introduction video
+- Create a github repository which each member has access to
+- Strategise how to tackle the project
+- Assign roles of who does what exercise
 
 ### New Items:
-- Go through and understand the documentation for the microcontroller. Each member will read through 2 of the documents and note down their key uses.
+- Jasper works on exercise 3 of the lab document
+- Aurora works on exercise 1 of the lab document
 
 ### Next Meeting Date:
-05/03/2025
+09/04/2025
