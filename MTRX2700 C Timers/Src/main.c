@@ -13,18 +13,11 @@ int main(void)
     enable_timer_clock();
     initialise_leds();
 
-    timer_init(200, led_flash);
-
-    uint32_t a = 1;
+    // testing.
+    timer_init(1000, led_flash);
+    //timer_oneshot(10000, led_flash_left);
 
     while (1) {
     	// idle loop
-    	if (a == 1) {
-    		set_timer_period(200); // 5x a second.
-    		a = 0;
-    	} else if (a == 2) {
-    		set_timer_period(1000); // 1x a second.
-    		a = 0;
-    	}
     }
 }
