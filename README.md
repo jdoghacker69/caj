@@ -1,6 +1,6 @@
 # Eliza's Circuit Breakers/Cajun Circuits
 
-## **MTRX2700 Microcontrollers in C **  
+## **MTRX2700 Microcontrollers in C**  
 
 ### **Group Members and Roles**
 | Name  | Role | Responsibilities |
@@ -49,7 +49,23 @@ This git repository must be cloned onto your device, and a workspace opened in S
 
 ---
 
-## Exercise 1 - LED control and button handling
+## **Exercise 1 - LED control and button handling**
+
+### Summary
+
+### Usage
+
+To adjust the starting LED
+
+### Functions and modularity
+
+### Testing (valid input aswell)
+
+### Notes
+
+---
+
+## **Exercise 2 - String transmission, reception, and port forwarding**
 
 ### Summary
 
@@ -65,48 +81,37 @@ This git repository must be cloned onto your device, and a workspace opened in S
 
 ---
 
-## **Code Structure**
+## **Exercise 3 - Implementing precise delays and event handling**
 
+### Summary
 
-## **Testing Procedures**
-Each module has been tested individually before integration. The testing approach follows:
+### Usage
 
-### **1. Memory and Pointers**
-- **Test case:** Convert uppercase strings to lowercase and vice versa  
-- **Expected output:** Correctly transformed strings stored in memory  
+### Valid input
 
-### **2. Digital I/O** 
-- **Test case:** Button press cycles through LED states  
-- **Expected output:** LEDs turn on/off correctly based on user input
---**Test case* : LED's incriment on button press*-
--*output* : the LED's will cycle and left shift with every button press, or right shift and remove LED*
--*test case* - alphabet is cycled through properly*
--*Expected output* - the bits will only cycle 26 times until z, then terminate afterwards 
+### Functions and modularity
 
-### **3. Serial Communication**
-- **Test case:** A button press triggers the board to send a message via USART1 to cuteCom
-- **Expected output:** Stored string displays on cuteCom interface
-- **Test case:** Change clock speed
-- **Expected output:** When button pressed the stored string gets sent much faster, leading to jumbled output
-- **Test case:** Receive a message via USART1
-- **Expected output:** String inputted to cuteCom gets stored in buffer register (check memory browser)
-- **Test case:** Transmit a message via USART1
-- **Expected output:** String gets displayed on cuteCom interface.
-- **Test case:** Transmit a message via UART4
-- **Expected output:** Debugging line by line shows the string gradually getting transmitted (when a letter gets transmitted it gets removed from the buffer register).
+### Testing
 
-### **4. Hardware Timers**
-- **Test case:** 1-second LED blink rate using a hardware timer  
-- **Expected output:** LEDs toggle at precise intervals
-- test case:* LED's terminate after cycle is over*
-- *expected output* Once showing after the given delay, the LED's will turn off automatically 
-
-### **5. Integration Test**
-- **Test case:** End-to-end functionality including input/output and processing  
-- **Expected output:** Combined features work as expected  
+### Notes
 
 ---
 
+## **Exercise 4 - Integration**
+
+### Summary
+
+### Usage
+
+### Valid input
+
+### Functions and modularity
+
+### Testing
+
+### Notes
+
+---
 
 ## **Acknowledgments**
 - Dr. Stephany Berrio & Stewart Worrall (University of Sydney) for lab guidance  
