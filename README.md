@@ -49,6 +49,22 @@ This git repository must be cloned onto your device, and a workspace opened in S
 
 ---
 
+## Exercise 1 - LED control and button handling
+
+### Summary
+
+### Usage
+
+### Valid input
+
+### Functions and modularity
+
+### Testing
+
+### Notes
+
+---
+
 ## **Code Structure**
 
 
