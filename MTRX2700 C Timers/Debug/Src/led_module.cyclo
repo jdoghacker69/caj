@@ -1,0 +1,3 @@
+../Src/led_module.c:8:6:enable_led_clock	1
+../Src/led_module.c:12:6:initialise_leds	1
+../Src/led_module.c:18:6:led_flash	2
