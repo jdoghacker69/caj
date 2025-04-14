@@ -142,19 +142,58 @@ Implements UART communication with interrupt-driven reception and transmission. 
 ## **Exercise 3 - Implementing precise delays and event handling**
 
 ### Summary
-A timer module using hardware timers to trigger periodic or one-shot events. Timer periods and callbacks are configured during initialisation. Internally, the timer values are encapsulated.
+A timer module that provides a hardware timer interface that is capable of triggering periodic and oneshot events with the use of function pointers in callback functions. This module is designed to run independently, and to be attached on to other modules. It utilises two STM32F303 hardware timers to schedule and trigger code at inputted intervals.
+- TIM2 is used for periodic callbacks. These are events that should occur repeatedly, such as blinking leds, or updating a variable.
+- TIM3 is used for oneshot callbacks. These are events that should only occur once, such as triggering an LED after a specified delay, or responding to an input.
+Both of these timers have been configured to run on millisecond precision and use internal state and callback function pointers, which makes them modular and easy to coalesce.
 
 ### Usage
+The code must be downloaded and integrated into the workspace of the main project. Then the timer module must be set up. Both of the timer peripherals must be enabled.
+- enable_periodic_clock();
+- enable_oneshot_clock()
+After initialising the module, the functions may be called using their respective functions:
+- timer_init(ms, callback);
+- timer_oneshot(ms, callback);
+Where "callback" should be replaced with the function you wish to call. (E.g. led_flash.)
 
 ### Valid input
+- any positive integer delay value for ms, noting that it is taken in milliseconds.
+- any valid function pointer of type void (*callback)(void).
 
 ### Functions and modularity
+The timer module is isolated to the timer_module.c/h files. Independent timers are used for the periodic and oneshot modes. Key functions include:
+
+void enable_periodic_clock(void)
+- Enables the peripheral clock for the periodic function; Enables TIM2.
+
+void enable_oneshot_clock(void)
+- Enables the peripheral clock for the oneshot function; Enables TIM3.
+
+void timer_init(uint32_t ms, void (*callback)(void))
+- Initialises TIM2 using a user-defined interval which is given in milliseconds.
+- Triggers the user-defined function every given interval.
+
+void timer_oneshot(unit32_t ms, void (*callback)(void))
+- Initialises TIM3 using a user-defined interval which is given in milliseconds.
+- Triggers the user-defined function once after the given interval.
+
+void TIM2_IRQHandler(void)
+- Handles the interrupt process for TIM2.
+- Elicits the user-defined periodic callback function.
+
+void TIM3_IRQHandler(void)
+- Handles the interrupt process for TIM3.
+- Elicits the user-defined oneshot callback function.
 
 ### Testing
 | Test Cases | Expected Output | Observed behaviour |
 |------------|-----------------|--------------------|
+|timer_init(1000, led_blink_sequence)|The lit-up LED should circle around the board, updating every one second.|The lit-up LED circled around the board, updating every one second.|
+|timer_oneshot(2000), led_flash)|All the LEDs should flash once after two seconds.|The LEDs all flashed only once after two seconds.|
 
 ### Notes
+- Only one active periodic and one active oneshot callback can be called at a time.
+- Future improvements could incorporate a queue system for oneshot events.
 
 ---
 
