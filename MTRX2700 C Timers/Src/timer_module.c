@@ -1,6 +1,18 @@
 #include <stdint.h>
 #include "stm32f303xc.h"
 
+#define ONESHOT_QUEUE_SIZE 8
+
+typedef struct {
+	uint32_t delay_ms;
+	void (*callback)(void);
+} OneShotEvent;
+
+static OneShotEvent oneshot_queue[ONESHOT_QUEUE_SIZE];
+static uint8_t queue_head = 0;
+static uint8_t queue_tail = 0;
+static uint8_t oneshot_active = 0;
+
 // variables.
 volatile uint32_t interval_ms = 0;
 static void (*periodic_callback)(void) = 0;
@@ -18,6 +30,31 @@ void enable_periodic_clock(void) {
 // TIMER3
 void enable_oneshot_clock(void) {
 	RCC->APB1ENR |= RCC_APB1ENR_TIM3EN;
+}
+
+uint32_t enqueue_oneshot(uint32_t delay_ms, void(*callback)(void)) {
+	uint8_t next = (queue_tail + 1) % ONESHOT_QUEUE_SIZE;
+
+	if (next == queue_head) {
+		return -1;
+	}
+
+	oneshot_queue[queue_tail].delay_ms = delay_ms;
+	oneshot_queue[queue_tail].callback = callback;
+	queue_tail = next;
+
+	return 0;
+}
+
+uint32_t dequeue_oneshot(OneShotEvent *event) {
+	if (queue_head == queue_tail) {
+		return -1;
+	}
+
+	*event = oneshot_queue[queue_head];
+	queue_head = (queue_head + 1) % ONESHOT_QUEUE_SIZE;
+
+	return 0;
 }
 
 // setter to keep variables contained.
@@ -51,19 +88,24 @@ void timer_init(uint32_t ms, void (*callback)(void)) {
 
 // a timer that calls a function once after a set delay.
 void timer_oneshot(uint32_t ms, void(*callback)(void)) {
-	oneshot_callback = callback;
+    if (oneshot_active) {
+        enqueue_oneshot(ms, callback);
+        return;
+    }
 
-	TIM3->CR1 &= ~TIM_CR1_CEN;
-	TIM3->PSC = 7999;
-	TIM3->ARR = ms * 1;
-	TIM3->CNT = 0;
-	trigger_prescaler(TIM3);
+    oneshot_callback = callback;
+    oneshot_active = 1;
 
-	TIM3->SR &= ~TIM_SR_UIF;
-	TIM3->DIER |= TIM_DIER_UIE;
-	NVIC_EnableIRQ(TIM3_IRQn);
+    TIM3->CR1 &= ~TIM_CR1_CEN;
+    TIM3->PSC = 7999;
+    TIM3->ARR = ms - 1;
+    TIM3->CNT = 0;
+    trigger_prescaler(TIM3);
 
-	TIM3->CR1 |= TIM_CR1_CEN;
+    TIM3->SR &= ~TIM_SR_UIF;
+    TIM3->DIER |= TIM_DIER_UIE;
+    NVIC_EnableIRQ(TIM3_IRQn);
+    TIM3->CR1 |= TIM_CR1_CEN;
 }
 
 // handles the interrupt calls of the timer2.
@@ -80,11 +122,20 @@ void TIM2_IRQHandler(void) {
 void TIM3_IRQHandler(void) {
     if (TIM3->SR & TIM_SR_UIF) {
         TIM3->SR &= ~TIM_SR_UIF;
+
+        TIM3->CR1 &= ~TIM_CR1_CEN;
+		oneshot_active = 0;
+
         if (oneshot_callback) {
             oneshot_callback();
             oneshot_callback = 0;
         }
 
-        TIM3->CR1 &= ~TIM_CR1_CEN;
+        OneShotEvent next;
+        if (dequeue_oneshot(&next) == 0) {
+            timer_oneshot(next.delay_ms, next.callback);
+        }
     }
 }
+
+
