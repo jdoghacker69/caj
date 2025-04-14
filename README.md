@@ -151,9 +151,11 @@ Both of these timers have been configured to run on millisecond precision and us
 The code must be downloaded and integrated into the workspace of the main project. Then the timer module must be set up. Both of the timer peripherals must be enabled.
 - enable_periodic_clock();
 - enable_oneshot_clock()
+
 After initialising the module, the functions may be called using their respective functions:
 - timer_init(ms, callback);
 - timer_oneshot(ms, callback);
+
 Where "callback" should be replaced with the function you wish to call. (E.g. led_flash.)
 
 ### Valid input
