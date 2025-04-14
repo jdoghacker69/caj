@@ -94,9 +94,26 @@ The diode module is isolated to the 'diode.c/h' files, making it easy to integra
 - EXTI0 interrupt handler.
 - Called when button on PA0 is pressed.
 
+The timer module is isolated to the 'timer.c/h' files, making it easy to integrate into other projects. The following is a description on what each function does and how they're dependent on each other.
 
-### Testing (valid input aswell)
-The valid inputs for this program 
+#### void timer_init(void);
+- Sets up interrupts and timer.
+- Sets up EXTI0 for rising edge interrupts on PA0
+- Initialises TIM2 for periodic updates
+
+#### void timer2_init(void);
+- The timer2 function initialises TIM2 with preset values (10kHz base, 200ms interval)
+
+#### void timer2_set_callback(void (*callback)(void));
+- The timer2_set_callback function registers a callback to be called on every TIM2 update event
+
+
+### Testing
+| Test Cases | Expected Output | Observed behaviour |
+|------------|-----------------|--------------------|
+|Button press every 2 seconds|The LED's lit up consectutively in a clockwise direction once every 2 seconds| ...|
+|Reset button press|The program reset and the chase pattern began again at the initial LED| ... |
+|Several button presses in quick succession|The timer works and the LED's update once every 2 seconds| ... |
 
 
 ### Notes
@@ -115,6 +132,8 @@ Implements UART communication with interrupt-driven reception and transmission. 
 ### Functions and modularity
 
 ### Testing
+| Test Cases | Expected Output | Observed behaviour |
+|------------|-----------------|--------------------|
 
 ### Notes
 
@@ -132,6 +151,8 @@ A timer module using hardware timers to trigger periodic or one-shot events. Tim
 ### Functions and modularity
 
 ### Testing
+| Test Cases | Expected Output | Observed behaviour |
+|------------|-----------------|--------------------|
 
 ### Notes
 
@@ -149,6 +170,8 @@ Final application combines all modules. Receives serial commands and executes ac
 ### Functions and modularity
 
 ### Testing
+| Test Cases | Expected Output | Observed behaviour |
+|------------|-----------------|--------------------|
 
 ### Notes
 
