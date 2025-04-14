@@ -24,6 +24,13 @@ void led_flash(void) {
     *led_output_register = 0x00;
 }
 
+void led_blink_sequence(void) {
+    static uint8_t pattern = 0x01;
+    *led_output_register = pattern;
+    pattern <<= 1;
+    if (pattern == 0) pattern = 0x01;
+}
+
 // flashes half the leds. for testing mostly.
 void led_flash_left(void) {
     *led_output_register = led_mask_pattern_left;
