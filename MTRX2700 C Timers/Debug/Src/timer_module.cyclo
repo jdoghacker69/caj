@@ -1,7 +1,7 @@
 C:/Users/Morti/OneDrive/Documents/GitHub/stm32f303-definitions/Core/Inc/core_cm4.h:1688:22:__NVIC_EnableIRQ	2
 ../Src/timer_module.c:25:13:trigger_prescaler	1
-../Src/timer_module.c:30:10:enqueue_oneshot	2
-../Src/timer_module.c:47:10:dequeue_oneshot	2
+../Src/timer_module.c:30:17:enqueue_oneshot	2
+../Src/timer_module.c:47:17:dequeue_oneshot	2
 ../Src/timer_module.c:60:6:enable_periodic_clock	1
 ../Src/timer_module.c:64:6:enable_oneshot_clock	1
 ../Src/timer_module.c:68:6:set_timer_period	1
