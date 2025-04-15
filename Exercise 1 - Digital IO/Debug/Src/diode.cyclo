@@ -1,0 +1,5 @@
+../Src/diode.c:19:6:dio_init	1
+../Src/diode.c:36:6:dio_set_leds	1
+../Src/diode.c:46:9:dio_get_leds	1
+../Src/diode.c:52:6:dio_chase_led	3
+../Src/diode.c:68:6:EXTI0_IRQHandler	2
