@@ -23,9 +23,9 @@ Idx Name          Size      VMA       LMA       File off  Algn
                   CONTENTS, ALLOC, LOAD, DATA
   9 .ccmram       00000000  10000000  10000000  00002004  2**0
                   CONTENTS
- 10 .bss          00000028  20000004  20000004  00002004  2**2
+ 10 .bss          00000024  20000004  20000004  00002004  2**2
                   ALLOC
- 11 ._user_heap_stack 00000604  2000002c  2000002c  00002004  2**0
+ 11 ._user_heap_stack 00000600  20000028  20000028  00002004  2**0
                   ALLOC
  12 .ARM.attributes 00000030  00000000  00000000  00002004  2**0
                   CONTENTS, READONLY
@@ -41,13 +41,13 @@ Idx Name          Size      VMA       LMA       File off  Algn
                   CONTENTS, READONLY, DEBUGGING, OCTETS
  18 .debug_line   00000ebb  00000000  00000000  0001825d  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 19 .debug_str    000727a6  00000000  00000000  00019118  2**0
+ 19 .debug_str    0007279e  00000000  00000000  00019118  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 20 .comment      00000043  00000000  00000000  0008b8be  2**0
+ 20 .comment      00000043  00000000  00000000  0008b8b6  2**0
                   CONTENTS, READONLY
- 21 .debug_frame  00000224  00000000  00000000  0008b904  2**2
+ 21 .debug_frame  00000224  00000000  00000000  0008b8fc  2**2
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 22 .debug_line_str 0000005c  00000000  00000000  0008bb28  2**0
+ 22 .debug_line_str 0000005c  00000000  00000000  0008bb20  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
 
 Disassembly of section .text:
@@ -82,7 +82,7 @@ Disassembly of section .text:
 
 080001d4 <dio_init>:
 // Current state of the LEDs (bitmask for PE8–PE15)
-static uint8_t led_state = 0x00;
+static uint8_t led_state = 0x02;
 
 
 void dio_init(void (*button_callback)(void))
@@ -133,7 +133,7 @@ void dio_init(void (*button_callback)(void))
  8000218:	20000020 	.word	0x20000020
  800021c:	40021000 	.word	0x40021000
  8000220:	48001002 	.word	0x48001002
- 8000224:	20000024 	.word	0x20000024
+ 8000224:	20000000 	.word	0x20000000
 
 08000228 <dio_set_leds>:
 
@@ -165,50 +165,50 @@ void dio_set_leds(uint8_t pattern)
  8000248:	46bd      	mov	sp, r7
  800024a:	f85d 7b04 	ldr.w	r7, [sp], #4
  800024e:	4770      	bx	lr
- 8000250:	20000024 	.word	0x20000024
+ 8000250:	20000000 	.word	0x20000000
  8000254:	48001015 	.word	0x48001015
 
-08000258 <dio_chase_led_limited>:
+08000258 <dio_chase_led>:
     return led_state;
 }
 
 
-void dio_chase_led_limited(void)
+void dio_chase_led(void)
 {
  8000258:	b580      	push	{r7, lr}
  800025a:	af00      	add	r7, sp, #0
 	if (led_update_allowed) {  // Check if the timer has granted permission to update the LED pattern
- 800025c:	4b0d      	ldr	r3, [pc, #52]	@ (8000294 <dio_chase_led_limited+0x3c>)
+ 800025c:	4b0d      	ldr	r3, [pc, #52]	@ (8000294 <dio_chase_led+0x3c>)
  800025e:	781b      	ldrb	r3, [r3, #0]
  8000260:	b2db      	uxtb	r3, r3
  8000262:	2b00      	cmp	r3, #0
- 8000264:	d014      	beq.n	8000290 <dio_chase_led_limited+0x38>
+ 8000264:	d014      	beq.n	8000290 <dio_chase_led+0x38>
 	    led_update_allowed = 0;  // Consume the permission (set flag to 0 so that next update must wait for the timer)
- 8000266:	4b0b      	ldr	r3, [pc, #44]	@ (8000294 <dio_chase_led_limited+0x3c>)
+ 8000266:	4b0b      	ldr	r3, [pc, #44]	@ (8000294 <dio_chase_led+0x3c>)
  8000268:	2200      	movs	r2, #0
  800026a:	701a      	strb	r2, [r3, #0]
 
 	    led_state <<= 1;  // Shift the current LED pattern one position to the left (move the "lit" LED to the next position)
- 800026c:	4b0a      	ldr	r3, [pc, #40]	@ (8000298 <dio_chase_led_limited+0x40>)
+ 800026c:	4b0a      	ldr	r3, [pc, #40]	@ (8000298 <dio_chase_led+0x40>)
  800026e:	781b      	ldrb	r3, [r3, #0]
  8000270:	005b      	lsls	r3, r3, #1
  8000272:	b2da      	uxtb	r2, r3
- 8000274:	4b08      	ldr	r3, [pc, #32]	@ (8000298 <dio_chase_led_limited+0x40>)
+ 8000274:	4b08      	ldr	r3, [pc, #32]	@ (8000298 <dio_chase_led+0x40>)
  8000276:	701a      	strb	r2, [r3, #0]
 
 	    if (led_state == 0) {  // Check if the shifted LED pattern has reached zero (i.e., all LEDs are off)
- 8000278:	4b07      	ldr	r3, [pc, #28]	@ (8000298 <dio_chase_led_limited+0x40>)
+ 8000278:	4b07      	ldr	r3, [pc, #28]	@ (8000298 <dio_chase_led+0x40>)
  800027a:	781b      	ldrb	r3, [r3, #0]
  800027c:	2b00      	cmp	r3, #0
- 800027e:	d102      	bne.n	8000286 <dio_chase_led_limited+0x2e>
+ 800027e:	d102      	bne.n	8000286 <dio_chase_led+0x2e>
 	        led_state = 0x01;  // If all LEDs are off, restart from the first LED (PE8) by setting the first bit
- 8000280:	4b05      	ldr	r3, [pc, #20]	@ (8000298 <dio_chase_led_limited+0x40>)
+ 8000280:	4b05      	ldr	r3, [pc, #20]	@ (8000298 <dio_chase_led+0x40>)
  8000282:	2201      	movs	r2, #1
  8000284:	701a      	strb	r2, [r3, #0]
 	    }
 
 	    dio_set_leds(led_state);  // Update the actual LEDs with the new pattern (display the new "lit" LED)
- 8000286:	4b04      	ldr	r3, [pc, #16]	@ (8000298 <dio_chase_led_limited+0x40>)
+ 8000286:	4b04      	ldr	r3, [pc, #16]	@ (8000298 <dio_chase_led+0x40>)
  8000288:	781b      	ldrb	r3, [r3, #0]
  800028a:	4618      	mov	r0, r3
  800028c:	f7ff ffcc 	bl	8000228 <dio_set_leds>
@@ -216,8 +216,8 @@ void dio_chase_led_limited(void)
 }
  8000290:	bf00      	nop
  8000292:	bd80      	pop	{r7, pc}
- 8000294:	20000000 	.word	0x20000000
- 8000298:	20000024 	.word	0x20000024
+ 8000294:	20000001 	.word	0x20000001
+ 8000298:	20000000 	.word	0x20000000
 
 0800029c <EXTI0_IRQHandler>:
 
@@ -254,17 +254,15 @@ void EXTI0_IRQHandler(void)
 080002c8 <my_button_handler>:
 /* Button interrupt handler.
  * This function is called when the button is pressed.
- * It calls dio_chase_led_limited() to shift the LED if the timer allows.
+ * It calls dio_chase_led() to shift the LED if the timer allows.
  */
 void my_button_handler(void)
 {
  80002c8:	b580      	push	{r7, lr}
  80002ca:	af00      	add	r7, sp, #0
-	//dio_chase_led();  // Move the lit LED left
-
 	// Attempt to move the lit LED to the next position
-    dio_chase_led_limited();
- 80002cc:	f7ff ffc4 	bl	8000258 <dio_chase_led_limited>
+    dio_chase_led();
+ 80002cc:	f7ff ffc4 	bl	8000258 <dio_chase_led>
 }
  80002d0:	bf00      	nop
  80002d2:	bd80      	pop	{r7, pc}
@@ -275,7 +273,7 @@ int main(void)
 {
  80002d4:	b580      	push	{r7, lr}
  80002d6:	af00      	add	r7, sp, #0
-	// Initialise the diode module and register the button handler as the callback
+	// Initialise the diode module and register the button handler as the callback function
 	dio_init(my_button_handler);    // Set up LEDs
  80002d8:	4803      	ldr	r0, [pc, #12]	@ (80002e8 <main+0x14>)
  80002da:	f7ff ff7b 	bl	80001d4 <dio_init>
@@ -397,7 +395,7 @@ static void timer_tick_handler(void)
  8000388:	46bd      	mov	sp, r7
  800038a:	f85d 7b04 	ldr.w	r7, [sp], #4
  800038e:	4770      	bx	lr
- 8000390:	20000000 	.word	0x20000000
+ 8000390:	20000001 	.word	0x20000001
 
 08000394 <timer_init>:
 
@@ -509,7 +507,7 @@ void timer2_set_callback(void (*callback)(void))
  8000450:	f85d 7b04 	ldr.w	r7, [sp], #4
  8000454:	4770      	bx	lr
  8000456:	bf00      	nop
- 8000458:	20000028 	.word	0x20000028
+ 8000458:	20000024 	.word	0x20000024
 
 0800045c <TIM2_IRQHandler>:
 
@@ -538,7 +536,7 @@ void TIM2_IRQHandler(void)
  800047e:	bf00      	nop
  8000480:	bd80      	pop	{r7, pc}
  8000482:	bf00      	nop
- 8000484:	20000028 	.word	0x20000028
+ 8000484:	20000024 	.word	0x20000024
 
 08000488 <Reset_Handler>:
 
@@ -635,7 +633,7 @@ LoopForever:
   ldr r2, =_sbss
  80004d0:	20000004 	.word	0x20000004
   ldr r4, =_ebss
- 80004d4:	2000002c 	.word	0x2000002c
+ 80004d4:	20000028 	.word	0x20000028
 
 080004d8 <ADC1_2_IRQHandler>:
  * @retval : None

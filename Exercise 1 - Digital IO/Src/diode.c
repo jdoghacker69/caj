@@ -13,7 +13,7 @@
 static void (*btn_callback)(void) = 0x00;
 
 // Current state of the LEDs (bitmask for PE8–PE15)
-static uint8_t led_state = 0x00;
+static uint8_t led_state = 0x02;
 
 
 void dio_init(void (*button_callback)(void))
@@ -49,7 +49,7 @@ uint8_t dio_get_leds(void)
 }
 
 
-void dio_chase_led_limited(void)
+void dio_chase_led(void)
 {
 	if (led_update_allowed) {  // Check if the timer has granted permission to update the LED pattern
 	    led_update_allowed = 0;  // Consume the permission (set flag to 0 so that next update must wait for the timer)

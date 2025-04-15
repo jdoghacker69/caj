@@ -1,8 +1,19 @@
 /*
  * diode.h
  *
- *  Created on: Apr 7, 2025
- *      Author: aurora
+ * Digital I/O Module Header - STM32F3
+ * ------------------------------------
+ * This module handles the initialisation and control of digital I/O pins
+ * for an array of 8 LEDs (PE8–PE15) and a button (PA0) on the STM32F3 Discovery board.
+ *
+ * Features:
+ * - Initialises LED and button GPIOs
+ * - Supports setting and retrieving LED patterns
+ * - Includes a chase effect using timer-based permission
+ * - Provides an interrupt handler for button input via EXTI0
+ *
+ * Created on: Apr 7, 2025
+ * Author: aurora
  */
 
 #ifndef DIODE_H_
@@ -33,7 +44,7 @@ uint8_t dio_get_leds(void);
  * only allows updates when the timer grants permission.
  * Wraps around when it overflows.
  */
-void dio_chase_led_limited(void);
+void dio_chase_led(void);
 
 /*
  * EXTI0 interrupt handler.

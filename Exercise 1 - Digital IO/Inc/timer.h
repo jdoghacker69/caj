@@ -1,8 +1,19 @@
 /*
  * timer.h
  *
- *  Created on: Apr 9, 2025
- *      Author: aurora
+ * Timer Module Header - STM32F3
+ * --------------------------------
+ * This module provides functionality for initialising and handling
+ * timer-based interrupts on the STM32F3 Discovery board.
+ *
+ * Features:
+ * - Sets up external interrupt (EXTI0) on PA0 for rising edge detection.
+ * - Configures TIM2 as a periodic timer for regular updates (10kHz base, 200ms interval).
+ * - Allows user-defined callback registration for TIM2 update events.
+ * - Declares a global flag (`led_update_allowed`) used to trigger LED updates.
+ *
+ * Created on: Apr 9, 2025
+ * Author: aurora
  */
 
 #ifndef TIMER_H_

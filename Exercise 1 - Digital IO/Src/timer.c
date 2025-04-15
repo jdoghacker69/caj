@@ -8,7 +8,7 @@
 #include "stm32f303xc.h"
 #include "timer.h"
 
-// Initially set the global flag to 1 to allow LED udpate
+// Initially set the global flag to 1 to allow LED update
 volatile uint8_t led_update_allowed = 1;
 
 static void (*timer2_callback)(void) = 0;
