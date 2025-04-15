@@ -1,0 +1,4 @@
+../Src/user_command.c:10:13:getCommandType	5
+../Src/user_command.c:23:10:getCommand	3
+../Src/user_command.c:46:6:getStringOperand	3
+../Src/user_command.c:63:6:handleCommand	5

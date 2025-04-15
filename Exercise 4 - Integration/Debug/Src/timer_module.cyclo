@@ -1,0 +1,11 @@
+../Inc/core_cm4.h:1688:22:__NVIC_EnableIRQ	2
+../Src/timer_module.c:26:13:triggerPrescaler	1
+../Src/timer_module.c:31:17:enqueueOneshot	2
+../Src/timer_module.c:48:17:dequeueOneshot	2
+../Src/timer_module.c:61:6:initialiseTimers	1
+../Src/timer_module.c:66:6:setTimerPeriod	1
+../Src/timer_module.c:72:10:get_timer_period	1
+../Src/timer_module.c:76:6:timerPeriodic	1
+../Src/timer_module.c:93:6:timerOneshot	2
+../Src/timer_module.c:119:6:TIM2_IRQHandler	3
+../Src/timer_module.c:130:6:TIM3_IRQHandler	4
