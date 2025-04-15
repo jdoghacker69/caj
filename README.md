@@ -158,6 +158,10 @@ After initialising the module, the functions may be called using their respectiv
 
 Where "callback" should be replaced with the function you wish to call. (E.g. led_flash.)
 
+The time between function triggers can be adjusted by changing uint32_t ms value that inputted into the periodic and oneshot timers. This module can be combined with a module that utilises serial ports and usart/uart to allow the user to input a sentence that is read and translated into a value that can be passed through the periodic and oneshot timers as a millisecond value.
+
+Similarly, the callback function can be replaced with any function that the user wishes to run after a delay.
+
 ### Valid input
 - any positive integer delay value for ms, noting that it is taken in milliseconds.
 - any valid function pointer of type void (*callback)(void).
