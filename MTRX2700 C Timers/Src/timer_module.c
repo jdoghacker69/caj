@@ -27,7 +27,7 @@ static void trigger_prescaler(TIM_TypeDef *TIMx) {
 }
 
 // enqueues a one-shot event if buffer is not full.
-uint32_t enqueue_oneshot(uint32_t delay_ms, void(*callback)(void)) {
+static uint32_t enqueue_oneshot(uint32_t delay_ms, void(*callback)(void)) {
 	uint8_t next = (queue_tail + 1) % ONESHOT_QUEUE_SIZE;
 
 	// buffer is full.
@@ -44,7 +44,7 @@ uint32_t enqueue_oneshot(uint32_t delay_ms, void(*callback)(void)) {
 }
 
 // pushes to the next one-shot event if buffer is not empty.
-uint32_t dequeue_oneshot(OneShotEvent *event) {
+static uint32_t dequeue_oneshot(OneShotEvent *event) {
 	// buffer is empty.
 	if (queue_head == queue_tail) {
 		return -1;
