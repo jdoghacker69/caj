@@ -1,5 +1,4 @@
 #include "serial.h"
-
 #include "stm32f303xc.h"
 #include <string.h>
 
@@ -38,6 +37,7 @@ SerialPort USART1_PORT = {USART1,
 
 // InitialiseSerial - Initialise the serial port
 // Input: baudRate is from an enumerated set
+
 void SerialInitialise(uint32_t baudRate, SerialPort *serial_port, void (*completion_function)(uint32_t)) {
 
 	serial_port->completion_function = completion_function;
@@ -46,6 +46,8 @@ void SerialInitialise(uint32_t baudRate, SerialPort *serial_port, void (*complet
 	// common to all UARTs
 	RCC->APB1ENR |= RCC_APB1ENR_PWREN;
 	RCC->APB2ENR |= RCC_APB2ENR_SYSCFGEN;
+    RCC->AHBENR  |= RCC_AHBENR_GPIOCEN;    // PC4/PC5
+    RCC->APB2ENR |= RCC_APB2ENR_USART1EN;  // USART1
 
 	// enable the GPIO which is on the AHB bus
 	RCC->AHBENR |= serial_port->MaskAHBENR;
@@ -59,6 +61,9 @@ void SerialInitialise(uint32_t baudRate, SerialPort *serial_port, void (*complet
 	// set alternate function to enable USART to external pins
 	serial_port->GPIO->AFR[0] |= serial_port->SerialPinAlternatePinValueLow;
 	serial_port->GPIO->AFR[1] |= serial_port->SerialPinAlternatePinValueHigh;
+
+	serial_port->UART->CR1 |= USART_CR1_RXNEIE; // RX not empty interrupt
+	serial_port->UART->CR1 |= USART_CR1_TXEIE;  // TX empty interrupt (optional)
 
 	// enable the device based on the bits defined in the serial port definition
 	RCC->APB1ENR |= serial_port->MaskAPB1ENR;
@@ -130,3 +135,60 @@ uint8_t SerialReadChar(SerialPort *serial_port) {
 int is_start_command(const uint8_t *input) {
     return strcmp((const char *)input, "start") == 0;
 }
+
+volatile uint8_t input_received_flag = 0;
+volatile uint8_t received_string[MAX_BUFFER_LENGTH];
+volatile uint32_t string_index = 0;
+
+void USART1_EXTI25_IRQHandler(void) {
+
+	// Check for overrun or frame errors
+	if ((USART1->ISR & USART_ISR_FE_Msk) && (USART1->ISR & USART_ISR_ORE_Msk)) {
+		return;
+	}
+
+	if (USART1->ISR & USART_ISR_RXNE) {
+		while (SerialInputAvailable(&USART1_PORT)) {
+		    uint8_t c = SerialReadChar(&USART1_PORT);
+		    if (string_index < MAX_BUFFER_LENGTH - 1) {
+		        received_string[string_index++] = c;
+		        if (c == '\n' || c == '\r') {
+		            received_string[string_index - 1] = '\0'; // null-terminate
+		            input_received_flag = 1;
+		        }
+		    }
+		    else {
+		        string_index = 0;
+		    }
+		}
+	}
+
+		if (input_received_flag == 1) {
+		    SerialOutputString((uint8_t *)received_string, &USART1_PORT);
+		    //  Check if the command is "start" // if not - restart the while loop
+		    if (is_start_command(received_string) == 1) {
+		        uint8_t response[] = "\n--SECRET-- Command START received.\n";
+		        SerialOutputString(response, &USART1_PORT);
+		        ShapeDemo();
+		        return;
+		    }
+		    // Reset
+		    string_index = 0;
+		    input_received_flag = 0;
+
+		    for (uint32_t i = 0; i < MAX_BUFFER_LENGTH; i++) {
+		        received_string[i] = 0;
+		    }
+		}
+	}
+
+void setupNVIC(void)
+{
+    __disable_irq();
+    NVIC_SetPriority(USART1_IRQn, 1);
+    NVIC_EnableIRQ(USART1_IRQn);
+    __enable_irq();
+}
+
+
+

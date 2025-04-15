@@ -59,8 +59,8 @@ all: main-build
 main-build: comoen\ son!!!.elf secondary-outputs
 
 # Tool invocations
-comoen\ son!!!.elf comoen\ son!!!.map: $(OBJS) $(USER_OBJS) /Users/jdizzle/Downloads/MTRX2700-2025-main/comeon\ son/STM32F303VCTX_FLASH.ld makefile objects.list $(OPTIONAL_TOOL_DEPS)
-	arm-none-eabi-gcc -o "comoen son!!!.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m4 -T"/Users/jdizzle/Downloads/MTRX2700-2025-main/comeon son/STM32F303VCTX_FLASH.ld" --specs=nosys.specs -Wl,-Map="comoen son!!!.map" -Wl,--gc-sections -static --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=soft -mthumb -u _printf_float -Wl,--start-group -lc -lm -Wl,--end-group
+comoen\ son!!!.elf comoen\ son!!!.map: $(OBJS) $(USER_OBJS) /Users/jdizzle/Desktop/mtrx2700/github/caj/caj/copy/comeon\ son/STM32F303VCTX_FLASH.ld makefile objects.list $(OPTIONAL_TOOL_DEPS)
+	arm-none-eabi-gcc -o "comoen son!!!.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m4 -T"/Users/jdizzle/Desktop/mtrx2700/github/caj/caj/copy/comeon son/STM32F303VCTX_FLASH.ld" --specs=nosys.specs -Wl,-Map="comoen son!!!.map" -Wl,--gc-sections -static --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=soft -mthumb -u _printf_float -Wl,--start-group -lc -lm -Wl,--end-group
 	@echo 'Finished building target: $@'
 	@echo ' '
 

@@ -1,6 +1,6 @@
 #ifndef SERIAL_PORT_HEADER
 #define SERIAL_PORT_HEADER
-
+#define MAX_BUFFER_LENGTH 100
 
 #include <stdint.h>
 
@@ -8,6 +8,8 @@
 // c file as no one really needs to know this.
 struct _SerialPort;
 typedef struct _SerialPort SerialPort;
+
+
 
 
 // make any number of instances of the serial port (they are extern because
@@ -28,7 +30,14 @@ enum {
 // SerialInitialise - initialise the serial port
 // Input: baud rate as defined in the enum
 void SerialInitialise(uint32_t baudRate, SerialPort *serial_port, void (*completion_function)(uint32_t) );
- 
+
+void setupNVIC(void);
+
+
+
+
+void USART1_EXTI25_IRQHandler(void);
+
 
 // SerialOutputChar - output a char to the serial port
 //  note: this version waits until the port is ready (not using interrupts)

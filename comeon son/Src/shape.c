@@ -37,16 +37,16 @@ void shape_string(struct shape *_shape, uint8_t *string) {
   
   switch(_shape->type) {
     case SHAPE_SPHERE:
-      sprintf((int8_t*)string, "Shape is a SPHERE, radius is %lu, location is %.2f \r\n", _shape->dimension_1, _shape->location);
+      sprintf((int8_t*)string, "\nShape is a SPHERE, radius is %lu, location is %.2f \r", _shape->dimension_1, _shape->location);
       break;
     case SHAPE_CONE:
-      sprintf((int8_t*)string, "Shape is a CONE, radius is %lu, height is %lu, location is %.2f \r\n", _shape->dimension_1, _shape->dimension_2, _shape->location);
+      sprintf((int8_t*)string, "\nShape is a CONE, radius is %lu, height is %lu, location is %.2f \r", _shape->dimension_1, _shape->dimension_2, _shape->location);
       break;
     case SHAPE_CUBE:
-      sprintf((int8_t*)string, "Shape is a CUBE, side length is %lu, location is %.2f \r\n", _shape->dimension_1, _shape->location);
+      sprintf((int8_t*)string, "\nShape is a CUBE, side length is %lu, location is %.2f \r", _shape->dimension_1, _shape->location);
       break;
     default:
-      sprintf((int8_t*)string, "Shape is a UNKNOWN, type is %lu, location is %.2f \r\n", _shape->type, _shape->location);
+      sprintf((int8_t*)string, "\nShape is a UNKNOWN, type is %lu, location is %.2f \r", _shape->type, _shape->location);
       break;
     
   }
