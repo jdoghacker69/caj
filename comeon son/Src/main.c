@@ -146,7 +146,6 @@ while (!input_received_flag){
         }
         else {
             string_index = 0;
-            read_write_start();
 
         }
 	}
