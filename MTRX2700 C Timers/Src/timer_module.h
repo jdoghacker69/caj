@@ -14,7 +14,7 @@
 #include <stdint.h>
 
 /**
- * @brief Initializes the periodic timer, sets its callback function, and calls the function after every interval.
+ * Initializes the periodic timer, sets its callback function, and calls the function after every interval.
  *
  * @param ms        Period in milliseconds.
  * @param callback  Function to call every period.
@@ -22,7 +22,7 @@
 void timer_init(uint32_t ms, void (*callback)(void));
 
 /**
- * @brief Initializes the one-shot timer and sets its callback function. Calls the function once after a set delay.
+ * Initializes the one-shot timer and sets its callback function. Calls the function once after a set delay.
  *
  * @param ms        Period in milliseconds.
  * @param callback  Function to call after delay.
@@ -30,24 +30,24 @@ void timer_init(uint32_t ms, void (*callback)(void));
 void timer_oneshot(uint32_t ms, void (*callback)(void));
 
 /**
- * @brief Enables the peripheral clock for TIM2 (the periodic timer).
+ * Enables the peripheral clock for TIM2 (the periodic timer).
  */
 void enable_periodic_clock(void);
 
 /**
- * @brief Enables the peripheral clock for TIM3 (the one-shot timer).
+ * Enables the peripheral clock for TIM3 (the one-shot timer).
  */
 void enable_oneshot_clock(void);
 
 /**
- * @brief Updates the interval delay for the periodic timer.
+ * Updates the interval delay for the periodic timer.
  *
  * @param new_ms        new period in milliseconds.
  */
 void set_timer_period(uint32_t new_ms);
 
 /**
- * @brief Returns the current periodic timer's period value.
+ * Returns the current periodic timer's period value.
  *
  * @return uint32_t Current timer interval delay that is active.
  */
