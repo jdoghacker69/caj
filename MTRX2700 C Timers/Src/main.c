@@ -21,6 +21,6 @@ int main(void)
     timer_oneshot(4000, led_flash);
 
     while (1) {
-    	// idle loop
+    	// idle loop.
     }
 }
