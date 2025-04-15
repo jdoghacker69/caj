@@ -165,6 +165,15 @@ Where "callback" should be replaced with the function you wish to call. (E.g. le
 ### Functions and modularity
 The timer module is isolated to the timer_module.c/h files. Independent timers are used for the periodic and oneshot modes. Key functions include:
 
+static void trigger_prescaler(TIM_TypeDef *TIMx)
+- Forces the PSC and ARR values to be updated, using the UG bit.
+
+static uint32_t enqueue_oneshot(uint32_t delay_ms, void(*callback)(void))
+- Checks that there is room inside the buffer, if there is, the oneshot event is added to the end of the queue.
+
+static uint32_t dequeue_oneshot(OneShotEvent *event)
+- Checks that there is an item queued, if there is, it is pushed to run and the queue head is moved to the next in line.
+
 void enable_periodic_clock(void)
 - Enables the peripheral clock for the periodic function; Enables TIM2.
 
@@ -191,11 +200,11 @@ void TIM3_IRQHandler(void)
 | Test Cases | Expected Output | Observed behaviour |
 |------------|-----------------|--------------------|
 |timer_init(1000, led_blink_sequence)|The lit-up LED should circle around the board, updating every one second.|The lit-up LED circled around the board, updating every one second.|
-|timer_oneshot(2000), led_flash)|All the LEDs should flash once after two seconds.|The LEDs all flashed only once after two seconds.|
+|timer_oneshot(4000), led_flash)|All the LEDs should flash once after four seconds.|The LEDs all flashed only once after four seconds.|
 
 ### Notes
-- Only one active periodic and one active oneshot callback can be called at a time.
-- Future improvements could incorporate a queue system for oneshot events.
+- Only one active periodic and eight active oneshot callback can be called at a time.
+- Future improvements could include more timers to allow for more periodic calls.
 
 ---
 
