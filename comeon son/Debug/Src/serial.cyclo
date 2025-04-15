@@ -1,0 +1,6 @@
+../Src/serial.c:41:6:SerialInitialise	6
+../Src/serial.c:99:6:SerialOutputChar	2
+../Src/serial.c:109:6:SerialOutputString	2
+../Src/serial.c:121:5:SerialInputAvailable	1
+../Src/serial.c:125:9:SerialReadChar	1
+../Src/serial.c:130:5:is_start_command	1
