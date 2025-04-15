@@ -53,7 +53,6 @@ This git repository must be cloned onto your device. Open STM32CubeIDE and impor
 
 ## **Exercise 1 - LED control and button handling**
 
-
 ### Summary
 This module handles user input via a button and controls the onboard LEDs. A function pointer allows users to register custom behaviour on button press. LED states are managed internally and can only be modified through getter/setter functions exposed in the header file.
 
@@ -213,11 +212,13 @@ void TIM3_IRQHandler(void)
 ---
 
 ## **Exercise 4 - Integration**
-Final application combines all modules. Receives serial commands and executes actions such as LED updates, message echo, and timer triggers.
 
 ### Summary
+The integraation exercise combines all the previous modules. It's flowchart was depicted in the project overview setion and showed the main program loop constantly receviving user input over a serial connection. Once a user inputs a command, it decides what action to take whether that be udpating an LED pattern, echoing a message over serial or triggering timers. Operations can be run simultaneously and overlap each other.
 
 ### Usage
+
+If the serial port needs to be initialised with a baud rate other than the default 115200, the variable baud_rate in the 'main.c' file can be changed.
 
 ### Valid input
 
