@@ -38,8 +38,12 @@ int main(void)
 	setupNVIC();
 
 //	/* Loop forever */
-	for(;;)
+	while(1){
 		__WFI();
+		if (start_flag == 1){
+			ShapeDemo();
+	}
+	}
 }
 
 
@@ -56,51 +60,51 @@ void ShapeDemo(void) {
 	uint8_t string_buffer[64];
 
 	shape_string(&shape_1, &string_buffer[0]);
-	SerialOutputString(&string_buffer[0], &USART1_PORT);
+	SerialOutputStringDB(&string_buffer[0], &USART1_PORT);
 
 	shape_string(&shape_2, &string_buffer[0]);
-	SerialOutputString(&string_buffer[0], &USART1_PORT);
+	SerialOutputStringDB(&string_buffer[0], &USART1_PORT);
 
 	shape_3 = (struct shape*)malloc(sizeof(struct shape));
 	shape_string(shape_3, &string_buffer[0]);
-	SerialOutputString(&string_buffer[0], &USART1_PORT);
+	SerialOutputStringDB(&string_buffer[0], &USART1_PORT);
 
 	*shape_3 = generate_shape(SHAPE_CONE, 6,3);
 	shape_string(shape_3, &string_buffer[0]);
-	SerialOutputString(&string_buffer[0], &USART1_PORT);
+	SerialOutputStringDB(&string_buffer[0], &USART1_PORT);
 
 
 	for (uint32_t counter = 0; counter < NUMBER_OF_SHAPES; counter++) {
 		if (initialise_shape(&shape_array[counter], counter % 3, 3, 4)) {
 			shape_string(&shape_array[counter], &string_buffer[0]);
-			SerialOutputString(&string_buffer[0], &USART1_PORT);
+			SerialOutputStringDB(&string_buffer[0], &USART1_PORT);
 		} else {
 			shape_string(&shape_array[counter], &string_buffer[0]);
-			SerialOutputString(&string_buffer[0], &USART1_PORT);
+			SerialOutputStringDB(&string_buffer[0], &USART1_PORT);
 		}
 	}
 
 	// slide the shapes
 	sprintf(&string_buffer[0], "\nsliding the shapes by 1.5 units\r");
-	SerialOutputString(&string_buffer[0], &USART1_PORT);
+	SerialOutputStringDB(&string_buffer[0], &USART1_PORT);
 
 	for (uint32_t counter = 0; counter < NUMBER_OF_SHAPES; counter++) {
 		slide_shape(&shape_array[counter], 1.5);
 		shape_string(&shape_array[counter], &string_buffer[0]);
-		SerialOutputString(&string_buffer[0], &USART1_PORT);
+		SerialOutputStringDB(&string_buffer[0], &USART1_PORT);
 	}
 
 	// roll the shapes
 	sprintf(&string_buffer[0], "\nrolling the shapes by 2.5 units\n");
-	SerialOutputString(&string_buffer[0], &USART1_PORT);
+	SerialOutputStringDB(&string_buffer[0], &USART1_PORT);
 	for (uint32_t counter = 0; counter < NUMBER_OF_SHAPES; counter++) {
 		roll_shape(&shape_array[counter], 2.5);
 		shape_string(&shape_array[counter], &string_buffer[0]);
-		SerialOutputString(&string_buffer[0], &USART1_PORT);
+		SerialOutputStringDB(&string_buffer[0], &USART1_PORT);
 	}
 
 	for(;;) {
-		SerialOutputString(string_to_send, &USART1_PORT);
+		SerialOutputStringDB(string_to_send, &USART1_PORT);
 	}
 }
 

@@ -1,10 +1,10 @@
 /Users/jdizzle/Desktop/mtrx2700/MTRX2700-2025/stm32f303-definitions/Core/Inc/core_cm4.h:1688:22:__NVIC_EnableIRQ	2
 /Users/jdizzle/Desktop/mtrx2700/MTRX2700-2025/stm32f303-definitions/Core/Inc/core_cm4.h:1816:22:__NVIC_SetPriority	2
 ../Src/serial.c:41:6:SerialInitialise	6
-../Src/serial.c:104:6:SerialOutputChar	2
-../Src/serial.c:114:6:SerialOutputString	2
-../Src/serial.c:126:5:SerialInputAvailable	1
-../Src/serial.c:130:9:SerialReadChar	1
-../Src/serial.c:135:5:is_start_command	1
-../Src/serial.c:143:6:USART1_EXTI25_IRQHandler	11
-../Src/serial.c:185:6:setupNVIC	1
+../Src/serial.c:103:6:setupNVIC	1
+../Src/serial.c:113:6:SerialOutputChar	2
+../Src/serial.c:121:5:SerialInputAvailable	1
+../Src/serial.c:125:9:SerialReadChar	1
+../Src/serial.c:130:5:is_start_command	1
+../Src/serial.c:159:6:USART1_EXTI25_IRQHandler	18
+../Src/serial.c:238:6:SerialOutputStringDB	4

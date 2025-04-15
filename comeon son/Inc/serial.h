@@ -1,8 +1,11 @@
+#include <stdint.h>
+
 #ifndef SERIAL_PORT_HEADER
 #define SERIAL_PORT_HEADER
-#define MAX_BUFFER_LENGTH 100
+#define MAX_BUFFER_LENGTH 128
 
-#include <stdint.h>
+
+#define DB_BUFFER_SIZE 256
 
 // Defining the serial port struct, the definition is hidden in the
 // c file as no one really needs to know this.
@@ -15,8 +18,7 @@ typedef struct _SerialPort SerialPort;
 // make any number of instances of the serial port (they are extern because
 //   they are fixed, unique values)
 extern SerialPort USART1_PORT;
-
-
+extern uint8_t start_flag;
 // The user might want to select the baud rate
 enum {
   BAUD_9600,
@@ -47,7 +49,7 @@ void SerialOutputChar(uint8_t, SerialPort *serial_port);
 
 // SerialOutputString - output a NULL TERMINATED string to the serial port
 // Input: pointer to a NULL-TERMINATED string (if not null terminated, there will be problems)
-void SerialOutputString(uint8_t *pt, SerialPort *serial_port);
+void SerialOutputStringDB(uint8_t *pt, SerialPort *serial_port);
  
  
 int SerialInputAvailable(SerialPort *serial_port);
