@@ -99,44 +99,8 @@ void ShapeDemo(void) {
 		SerialOutputString(&string_buffer[0], &USART1_PORT);
 	}
 
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-}
-
-
-
-
-
-
-
-void read_write_start(void) {
-while (!input_received_flag){
-	while (SerialInputAvailable(&USART1_PORT)) {
-        uint8_t c = SerialReadChar(&USART1_PORT);
-        if (string_index < MAX_BUFFER_LENGTH - 1) {
-            received_string[string_index++] = c;
-            if (c == '\n' || c == '\r') {
-                received_string[string_index - 1] = '\0'; // null-terminate
-                input_received_flag = 1;
-            }
-        }
-        else {
-            string_index = 0;
-
-        }
-=======
 	for(;;) {
 		SerialOutputString(string_to_send, &USART1_PORT);
->>>>>>> Stashed changes
-=======
-	for(;;) {
-		SerialOutputString(string_to_send, &USART1_PORT);
->>>>>>> Stashed changes
-=======
-	for(;;) {
-		SerialOutputString(string_to_send, &USART1_PORT);
->>>>>>> Stashed changes
 	}
 }
 
