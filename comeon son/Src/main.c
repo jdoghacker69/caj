@@ -100,6 +100,7 @@ void ShapeDemo(void) {
 	}
 
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
 }
 
 
@@ -123,6 +124,10 @@ while (!input_received_flag){
             string_index = 0;
 
         }
+=======
+	for(;;) {
+		SerialOutputString(string_to_send, &USART1_PORT);
+>>>>>>> Stashed changes
 =======
 	for(;;) {
 		SerialOutputString(string_to_send, &USART1_PORT);
