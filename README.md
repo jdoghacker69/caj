@@ -214,17 +214,33 @@ void TIM3_IRQHandler(void)
 ## **Exercise 4 - Integration**
 
 ### Summary
-The integraation exercise combines all the previous modules. It's flowchart was depicted in the project overview setion and showed the main program loop constantly receviving user input over a serial connection. Once a user inputs a command, it decides what action to take whether that be udpating an LED pattern, echoing a message over serial or triggering timers. Operations can be run simultaneously and overlap each other.
+The integration exercise brings together the functionality of the previous modules—Digital I/O, Serial Communication, and Timer Interface—into a complete real-time embedded system. The core loop of the program constantly checks for incoming serial input using UART and processes commands in real-time without blocking delays. These commands can control LED patterns, print messages over serial, or trigger timed operations using the hardware timers. Each module remains self-contained and communicates through clear APIs and function pointers to maintain modularity.
+
+The system reacts to complete input lines terminated by newline (\n) or carriage return (\r) characters. Once received, the string is parsed and dispatched using handleCommand() (from user_command.c), which interprets the command and calls the appropriate module-level function. This design allows for concurrent operations like LED updates and timed callbacks while still accepting user input in real time.
 
 ### Usage
+Once flashed onto the STM32F3 board, the system is ready to accept user commands over UART1. You can use CuteCom (Linux/macOS) or PuTTY (Windows) to open a terminal at the settings specified in the **Installation & Usage Instructions** section. 
 
-If the serial port needs to be initialised with a baud rate other than the default 115200, the variable baud_rate in the 'main.c' file can be changed.
+If needed, the baud rate can be changed in main.c by modifying the global baud_rate variable before calling SerialInitialise().
 
-### Valid input
+To send a command, type your string in the terminal and press Enter. The system will respond based on the input and execute the corresponding action.
 
 ### Functions and modularity
 
 ### Testing
+The command parser currently supports the following valid input:
+
+led chase – Starts a LED chase pattern using timer callbacks.
+
+led set 0xAA – Directly sets the LED output pattern using a hex value.
+
+echo Hello! – Sends back the string “Hello!” over the UART.
+
+timer oneshot 3000 – Triggers a one-time event 3 seconds later.
+
+timer periodic 2000 – Begins a repeated event every 2 seconds.
+
+All commands must end with a newline or carriage return to be accepted.
 | Test Cases | Expected Output | Observed behaviour |
 |------------|-----------------|--------------------|
 
