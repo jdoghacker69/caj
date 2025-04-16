@@ -22,10 +22,10 @@
 - Come up with a group name
 
 ### New Items:
-- Name chosen to be ...
+- Name was decided to be Eliza's Circuit Breakers/Cajun Circuits
 - Connor focuses on exercise 3
 - Jasper keeps progressing on exercise 2
 - Aurora works on the README file
 
 ### Next Meeting Date:
-../04/2025
+16/04/2025
