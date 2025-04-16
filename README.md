@@ -413,9 +413,9 @@ The user command module has been rigorously tested with the following valid inpu
 | "serial This is a message" | The string "This is a message" gets printed on the serial monitor output | Yes |
 | "serial 123i9013i0$W%T%" | The string correctly gets printed on the serial monitor output | Yes |
 | "oneshot 2000" | Triggers the LED's to flash 2 seconds later | Yes |
-| "oneshot 0" | Triggers the LED's to not flash | Yes |
+| "oneshot 0" | The LED's won't flash | Yes |
 | "timer 3000" | Triggers the LED's to flash once every 3 seconds | Yes |
-| "timer 0" | Triggers a debugging LED flash to warn of no period | Yes |
+| "timer 0001" | Will have no flashing  | Yes |
 
 The module was then tested with the following edge cases and invalid input to ensure the program exits gracefully when encountering an error:
 
@@ -428,6 +428,7 @@ The module was then tested with the following edge cases and invalid input to en
 | "1000 timer" | Print error message for unknown command | Yes |
 | "dfnakfwaojo" | Print error message for unknown command | Yes |
 | "timer sdasdfsd" | Triggers a debugging LED flash to warn of no period | Yes |
+| "timer 0" | Triggers a debugging LED flash to warn of no period | Yes |
 
 ---
 
