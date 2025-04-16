@@ -23,7 +23,7 @@ Modules:
 3. Hardware Timer Interface: Supports periodic and one-shot callbacks using configurable timer events.
 4. Integration Task: Parses serial commands to control LEDs, echo messages, and manage timers in real time.
 
-The following flowcharts for each part depict the flow...
+The following flowchart diagrams give an overview of the integration exercise that uses all modules as submodules:
 
 [insert flowcharts here once made in draw.io]
 
@@ -236,9 +236,9 @@ The user command module has been rigorously tested with the following valid inpu
 | "serial This is a message" | The string "This is a message" gets printed on the serial monitor output | Yes |
 | "serial 123i9013i0$W%T%" | The string correctly gets printed on the serial monitor output | Yes |
 | "oneshot 2000" | Triggers the LED's to flash 2 seconds later | Yes |
-| "oneshot 0" | Triggers the LED's to flash instantly | Yes |
+| "oneshot 0" | Triggers the LED's to not flash | Yes |
 | "timer 3000" | Triggers the LED's to flash once every 3 seconds | Yes |
-| "timer 0" | Triggers the LED's to flash every 0 seconds so it looks constantly on | Yes |
+| "timer 0" | Triggers a debugging LED flash to warn of no period | Yes |
 
 The module was then tested with the following edge cases and invalid input to ensure the program exits gracefully when encountering an error:
 
@@ -248,8 +248,9 @@ The module was then tested with the following edge cases and invalid input to en
 | "serial" | Print error to add a message after serial command | Yes |
 | "oneshot" | Print error message to structure the command properly | Yes |
 | "timer" | Print error message to structure the command properly | Yes |
-| "1000 timer" | Print error message for unkown command | Yes |
-| "dfnakfwaojo" | Print error message for unkown command | Yes |
+| "1000 timer" | Print error message for unknown command | Yes |
+| "dfnakfwaojo" | Print error message for unknown command | Yes |
+| "timer sdasdfsd" | Triggers a debugging LED flash to warn of no period | Yes |
 
 ---
 
