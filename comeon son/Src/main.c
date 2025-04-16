@@ -7,24 +7,17 @@
 #include "movement.h"
 #include "serial.h"
 
-
-
-
-
 #if !defined(__SOFT_FP__) && defined(__ARM_FP)
 #warning "FPU is not initialized, but the project is compiling for an FPU. Please initialize the FPU before use."
 #endif
 
 
-
-// Optional visual delay after transmission
+// visual delay after transmission
 void finished_transmission(uint32_t bytes_sent) {
     for (volatile uint32_t i = 0; i < 0x3ffff; i++) { }
 }
 
 //Declaring constants
-
-
 uint8_t *string_to_send = "I'm on a poll!\r\n";
 const int NUMBER_OF_SHAPES = 16;
 

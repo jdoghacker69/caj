@@ -108,16 +108,6 @@ void setupNVIC(void)
     __enable_irq();
 }
 
-
-
-void SerialOutputChar(uint8_t data, SerialPort *serial_port) {
-
-	while((serial_port->UART->ISR & USART_ISR_TXE) == 0){
-	}
-
-	serial_port->UART->TDR = data;
-}
-
 int SerialInputAvailable(SerialPort *serial_port) {
     return (serial_port->UART->ISR & USART_ISR_RXNE);
 }

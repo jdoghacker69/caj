@@ -29,25 +29,25 @@ Idx Name          Size      VMA       LMA       File off  Algn
                   ALLOC
  12 .ARM.attributes 0000002a  00000000  00000000  000061fc  2**0
                   CONTENTS, READONLY
- 13 .debug_info   00001ce5  00000000  00000000  00006226  2**0
+ 13 .debug_info   00001cb4  00000000  00000000  00006226  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 14 .debug_abbrev 0000092d  00000000  00000000  00007f0b  2**0
+ 14 .debug_abbrev 0000092d  00000000  00000000  00007eda  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 15 .debug_aranges 000001e8  00000000  00000000  00008838  2**3
+ 15 .debug_aranges 000001e0  00000000  00000000  00008808  2**3
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 16 .debug_rnglists 00000151  00000000  00000000  00008a20  2**0
+ 16 .debug_rnglists 0000014b  00000000  00000000  000089e8  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 17 .debug_macro  00016ff5  00000000  00000000  00008b71  2**0
+ 17 .debug_macro  00016ff5  00000000  00000000  00008b33  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 18 .debug_line   000027f1  00000000  00000000  0001fb66  2**0
+ 18 .debug_line   000027b7  00000000  00000000  0001fb28  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 19 .debug_str    000785d8  00000000  00000000  00022357  2**0
+ 19 .debug_str    000785c2  00000000  00000000  000222df  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 20 .comment      00000043  00000000  00000000  0009a92f  2**0
+ 20 .comment      00000043  00000000  00000000  0009a8a1  2**0
                   CONTENTS, READONLY
- 21 .debug_frame  00001834  00000000  00000000  0009a974  2**2
+ 21 .debug_frame  0000180c  00000000  00000000  0009a8e4  2**2
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 22 .debug_line_str 00000068  00000000  00000000  0009c1a8  2**0
+ 22 .debug_line_str 00000068  00000000  00000000  0009c0f0  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
 
 Disassembly of section .text:
@@ -1261,17 +1261,17 @@ Disassembly of section .text:
  8000f4e:	4770      	bx	lr
 
 08000f50 <finished_transmission>:
+#warning "FPU is not initialized, but the project is compiling for an FPU. Please initialize the FPU before use."
 #endif
 
 
-
-// Optional visual delay after transmission
+// visual delay after transmission
 void finished_transmission(uint32_t bytes_sent) {
  8000f50:	b480      	push	{r7}
  8000f52:	b085      	sub	sp, #20
  8000f54:	af00      	add	r7, sp, #0
  8000f56:	6078      	str	r0, [r7, #4]
-    for (volatile uint32_t i = 0; i < 0x3fffff; i++) { }
+    for (volatile uint32_t i = 0; i < 0x3ffff; i++) { }
  8000f58:	2300      	movs	r3, #0
  8000f5a:	60fb      	str	r3, [r7, #12]
  8000f5c:	e002      	b.n	8000f64 <finished_transmission+0x14>
@@ -1289,7 +1289,7 @@ void finished_transmission(uint32_t bytes_sent) {
  8000f72:	46bd      	mov	sp, r7
  8000f74:	bc80      	pop	{r7}
  8000f76:	4770      	bx	lr
- 8000f78:	003ffffe 	.word	0x003ffffe
+ 8000f78:	0003fffe 	.word	0x0003fffe
 
 08000f7c <main>:
 void ShapeDemo();
@@ -2079,10 +2079,6 @@ __STATIC_FORCEINLINE void __disable_irq(void)
  80014dc:	bd80      	pop	{r7, pc}
 
 080014de <SerialInputAvailable>:
-	}
-
-	serial_port->UART->TDR = data;
-}
 
 int SerialInputAvailable(SerialPort *serial_port) {
  80014de:	b480      	push	{r7}
