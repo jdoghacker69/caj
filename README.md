@@ -228,16 +228,28 @@ To send a command, type your string in the terminal and press Enter. The system 
 ### Functions and modularity
 
 ### Testing
-The user command module has been rigorously testing with the following valid input:
+The user command module has been rigorously tested with the following valid input:
 
-| Valid Test Cases | Expected Output | Output Behaved Correctly |
-|------------------|-----------------|--------------------------|
+| Valid Test Cases | Expected Output | Output Met Requirements |
+|------------------|-----------------|-------------------------|
 | "led 10011001" | Lights up the LEDs in the specified pattern | Yes |
 | "serial This is a message" | The string "This is a message" gets printed on the serial monitor output | Yes |
+| "serial 123i9013i0$W%T%" | The string correctly gets printed on the serial monitor output | Yes |
 | "oneshot 2000" | Triggers the LED's to flash 2 seconds later | Yes |
+| "oneshot 0" | Triggers the LED's to flash instantly | Yes |
 | "timer 3000" | Triggers the LED's to flash once every 3 seconds | Yes |
+| "timer 0" | Triggers the LED's to flash every 0 seconds so it looks constantly on | Yes |
 
-### Notes
+The module was then tested with the following edge cases and invalid input to ensure the program exits gracefully when encountering an error:
+
+| Invalid Test Cases | Expected Output | Output Met Requirements |
+|--------------------|-----------------|-------------------------|
+| "led" | Print error message to structure the command properly | Yes |
+| "serial" | Print error to add a message after serial command | Yes |
+| "oneshot" | Print error message to structure the command properly | Yes |
+| "timer" | Print error message to structure the command properly | Yes |
+| "1000 timer" | Print error message for unkown command | Yes |
+| "dfnakfwaojo" | Print error message for unkown command | Yes |
 
 ---
 
