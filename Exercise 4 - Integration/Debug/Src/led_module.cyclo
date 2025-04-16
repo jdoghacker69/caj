@@ -1,0 +1,4 @@
+../Src/led_module.c:12:6:initialiseLeds	1
+../Src/led_module.c:21:6:led_flash	2
+../Src/led_module.c:29:6:led_blink_sequence	2
+../Src/led_module.c:38:6:dio_set_leds	1

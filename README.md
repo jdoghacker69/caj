@@ -53,7 +53,6 @@ This git repository must be cloned onto your device. Open STM32CubeIDE and impor
 
 ## **Exercise 1 - LED control and button handling**
 
-
 ### Summary
 This module handles user input via a button and controls the onboard LEDs. A function pointer allows users to register custom behaviour on button press. LED states are managed internally and can only be modified through getter/setter functions exposed in the header file.
 
@@ -158,6 +157,10 @@ After initialising the module, the functions may be called using their respectiv
 
 Where "callback" should be replaced with the function you wish to call. (E.g. led_flash.)
 
+The time between function triggers can be adjusted by changing uint32_t ms value that inputted into the periodic and oneshot timers. This module can be combined with a module that utilises serial ports and usart/uart to allow the user to input a sentence that is read and translated into a value that can be passed through the periodic and oneshot timers as a millisecond value.
+
+Similarly, the callback function can be replaced with any function that the user wishes to run after a delay.
+
 ### Valid input
 - any positive integer delay value for ms, noting that it is taken in milliseconds.
 - any valid function pointer of type void (*callback)(void).
@@ -209,19 +212,30 @@ void TIM3_IRQHandler(void)
 ---
 
 ## **Exercise 4 - Integration**
-Final application combines all modules. Receives serial commands and executes actions such as LED updates, message echo, and timer triggers.
 
 ### Summary
+The integration exercise brings together the functionality of the previous modules—Digital I/O, Serial Communication, and Timer Interface—into a complete real-time embedded system. The core loop of the program constantly checks for incoming serial input using UART and processes commands in real-time without blocking delays. These commands can control LED patterns, print messages over serial, or trigger timed operations using the hardware timers. Each module remains self-contained and communicates through clear APIs and function pointers to maintain modularity.
+
+The system reacts to complete input lines terminated by newline (\n) or carriage return (\r) characters. Once received, the string is parsed and dispatched using handleCommand() (from user_command.c), which interprets the command and calls the appropriate module-level function. This design allows for concurrent operations like LED updates and timed callbacks while still accepting user input in real time.
 
 ### Usage
+Once flashed onto the STM32F3 board, the system is ready to accept user commands over UART1. You can use CuteCom (Linux/macOS) or PuTTY (Windows) to open a terminal at the settings specified in the **Installation & Usage Instructions** section. 
 
-### Valid input
+If needed, the baud rate can be changed in main.c by modifying the global baud_rate variable before calling SerialInitialise().
+
+To send a command, type your string in the terminal and press Enter. The system will respond based on the input and execute the corresponding action.
 
 ### Functions and modularity
 
 ### Testing
-| Test Cases | Expected Output | Observed behaviour |
-|------------|-----------------|--------------------|
+The user command module has been rigorously testing with the following valid input:
+
+| Valid Test Cases | Expected Output | Output Behaved Correctly |
+|------------------|-----------------|--------------------------|
+| "led 10011001" | Lights up the LEDs in the specified pattern | Yes |
+| "serial This is a message" | The string "This is a message" gets printed on the serial monitor output | Yes |
+| "oneshot 2000" | Triggers the LED's to flash 2 seconds later | Yes |
+| "timer 3000" | Triggers the LED's to flash once every 3 seconds | Yes |
 
 ### Notes
 
