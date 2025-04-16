@@ -462,6 +462,13 @@ The module was then tested with the following edge cases and invalid input to en
 | "timer sdasdfsd" | Triggers a debugging LED flash to warn of no period |
 | "timer 0" | Triggers a debugging LED flash to warn of no period |
 
+### Notes
+- The serial buffer has a fixed size of 100 characters—input lines longer than this are discarded.
+- The system uses a simple string parser and is case-sensitive.
+- LED commands update GPIO states on PE8–PE15.
+- Future enhancements could include more robust parsing, error messages for invalid input, or multi-command queues.
+- The integration demonstrates non-blocking design—timers and input can operate concurrently without delay-based polling.
+
 ---
 
 ## **Acknowledgments**
