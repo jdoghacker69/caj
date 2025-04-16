@@ -387,6 +387,10 @@ void TIM3_IRQHandler(void)
 |------------|-----------------|--------------------|
 |timer_init(1000, led_blink_sequence)|The lit-up LED should circle around the board, updating every one second.|The lit-up LED circled around the board, updating every one second.|
 |timer_oneshot(4000), led_flash)|All the LEDs should flash once after four seconds.|The LEDs all flashed only once after four seconds.|
+|timer_init(1000)|Throw an error message|Throws an error message|
+|timer_init(uytfgjk, led_flash)|Throw an error message|Throws an error message|
+|timer_init(0, led_flash)|It will give a signed value to an unsigned input, which will trigger the LEDs to flash for debug|Flashes the LEDs once|
+|timer_oneshot(-1000)|Throw an error message|Throws an error message|
 
 ### Notes
 - Only one active periodic and eight active oneshot callback can be called at a time.
