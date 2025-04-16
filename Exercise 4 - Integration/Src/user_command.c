@@ -1,11 +1,13 @@
 #include "user_command.h"
-#include "serial.h"
 #include "timer_module.h"
 #include "led_module.h"
+#include "serial.h"
 
 #include <string.h>
 #include <stdlib.h>
 #include <stdio.h>
+#include <ctype.h>
+
 
 CommandType getCommandType(const uint8_t *input)
 {
@@ -20,6 +22,36 @@ CommandType getCommandType(const uint8_t *input)
     return CMD_UNKNOWN;
 }
 
+static int isValidOperand(const char *command, const char *operand)
+{
+    if (strcmp(command, "led") == 0) {
+        // Check that it's exactly 8 characters of 0s and 1s
+        if (strlen(operand) != 8) return 0;
+        for (int i = 0; i < 8; i++) {
+            if (operand[i] != '0' && operand[i] != '1') return 0;
+        }
+        return 1;
+    }
+
+    if (strcmp(command, "timer") == 0 || strcmp(command, "oneshot") == 0) {
+        // Check all digits
+        for (int i = 0; operand[i] != '\0'; i++) {
+            if (!isdigit((unsigned char)operand[i])) return 0;
+        }
+        int value = atoi(operand);
+        if (strcmp(command, "timer") == 0 && value >= 2) return 1;
+        if (strcmp(command, "oneshot") == 0 && value >= 1) return 1;
+        return 0;
+    }
+
+    // Default fallback (accept digits)
+    for (int i = 0; operand[i] != '\0'; i++) {
+        if (!isdigit((unsigned char)operand[i])) return 0;
+    }
+
+    return 1;
+}
+
 uint32_t getCommand(const uint8_t *input)
 {
     char command[16] = {0};
@@ -27,18 +59,22 @@ uint32_t getCommand(const uint8_t *input)
 
     int parsed = sscanf((const char *)input, "%15s %31s", command, operand);
 
-    // If both a command and value were given
     if (parsed == 2)
     {
-        // If command led, convert binary string to a number
-        if (strcmp(command, "led") == 0)
-        {
+        if (!isValidOperand(command, operand)) {
+            SerialOutputString((uint8_t *)"Invalid operand for command\n", &USART1_PORT);
+            return 0;
+        }
+
+        if (strcmp(command, "led") == 0) {
             return (uint32_t)strtol(operand, NULL, 2);  // base 2
         } else {
             return (uint32_t)atoi(operand);  			// base 10
         }
-    } else {
-        SerialOutputString((uint8_t *)"No message provided\n", &USART1_PORT);
+    }
+    else
+    {
+        SerialOutputString((uint8_t *)"Please structure your instruction '[command] [value]'\n", &USART1_PORT);
         return 0;
     }
 }
@@ -56,7 +92,7 @@ void getStringOperand(const uint8_t *input)
         SerialOutputString((uint8_t *)operand, &USART1_PORT);
         SerialOutputChar('\n', &USART1_PORT);
     } else {
-        SerialOutputString((uint8_t *)"No message provided\n", &USART1_PORT);
+        SerialOutputString((uint8_t *)"No message provided, please add a message after the command\n", &USART1_PORT);
     }
 }
 
@@ -66,26 +102,22 @@ void handleCommand(const uint8_t *input, SerialPort *port)
 
     switch (commandType) {
         case CMD_LED:
-            SerialOutputString((uint8_t *)"LED command detected\n", port);
             uint8_t pattern = getCommand(input);  	// Extract LED pattern
             dio_set_leds(pattern);
             break;
 
         case CMD_SERIAL:
-            SerialOutputString((uint8_t *)"Serial command detected\n", port);
             getStringOperand(input);  				// Extract and echo string message
             break;
 
         case CMD_ONESHOT:
-            SerialOutputString((uint8_t *)"Oneshot command detected\n", port);
             uint32_t duration = getCommand(input);  // Extract delay in ms
-            timerOneshot(duration, led_flash);  	// Start one-shot timer
+            timerOneshot(duration, led_flash);
             break;
 
         case CMD_TIMER:
-            SerialOutputString((uint8_t *)"Timer command detected\n", port);
             uint32_t duration2 = getCommand(input); // Extract interval in ms
-            timerPeriodic(duration2, led_flash);  	// Start periodic timer
+            timerPeriodic(duration2, led_flash);
             break;
 
         default:

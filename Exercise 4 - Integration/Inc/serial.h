@@ -1,32 +1,23 @@
-/**
- * @file serial_port.h
- * @brief Serial communication module for STM32F3 using USART peripherals.
- *
- * This module provides an abstraction layer for serial communication using the USART interfaces
- * on the STM32F3 Discovery board. It defines a `SerialPort` structure to represent serial ports,
- * and provides functions for initialising a USART, sending and receiving characters, and
- * transmitting null-terminated strings.
- *
- * The user can select from a predefined set of baud rates and assign callback functions to be
- * invoked after serial initialisation completes. It also exposes a global instance for USART1.
- */
-
 #ifndef SERIAL_PORT_HEADER
 #define SERIAL_PORT_HEADER
-
+#define MAX_BUFFER_LENGTH 100
 
 #include <stdint.h>
-#include <stdbool.h>
 
-
-// Struct to define a serial port configuration
+// Defining the serial port struct, the definition is hidden in the
+// c file as no one really needs to know this.
 struct _SerialPort;
 typedef struct _SerialPort SerialPort;
 
-// Instantiate USART1 as a serial port using the SerialPort struct
+
+
+
+// make any number of instances of the serial port (they are extern because
+//   they are fixed, unique values)
 extern SerialPort USART1_PORT;
 
-// Option for user the select the baud rate that gets input into 'SerialInitialise'
+
+// The user might want to select the baud rate
 enum {
   BAUD_9600,
   BAUD_19200,
@@ -36,20 +27,31 @@ enum {
 };
 
 
-// Initialises USART with GPIO and baud rate
+// SerialInitialise - initialise the serial port
+// Input: baud rate as defined in the enum
 void SerialInitialise(uint32_t baudRate, SerialPort *serial_port, void (*completion_function)(uint32_t) );
- 
-// Check if data is available in RX buffer
-bool SerialInputAvailable(SerialPort *serial_port);
 
-// Read a single character from RX register
-uint8_t SerialReadChar(SerialPort *serial_port);
+void setupNVIC(void);
 
-// Transmit a single character to the serial port (this version waits until the port is ready)
+
+
+
+void USART1_EXTI25_IRQHandler(void);
+
+
+// SerialOutputChar - output a char to the serial port
+//  note: this version waits until the port is ready (not using interrupts)
+// Input: char to be transferred
 void SerialOutputChar(uint8_t, SerialPort *serial_port);
 
-// Transmits a NULL TERMINATED string to the serial port
+
+// SerialOutputString - output a NULL TERMINATED string to the serial port
+// Input: pointer to a NULL-TERMINATED string (if not null terminated, there will be problems)
 void SerialOutputString(uint8_t *pt, SerialPort *serial_port);
- 
+
+
+int SerialInputAvailable(SerialPort *serial_port);
+
+uint8_t SerialReadChar(SerialPort *serial_port);
 
 #endif
