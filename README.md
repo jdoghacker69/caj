@@ -114,11 +114,11 @@ The timer module is isolated to the 'timer.c/h' files, making it easy to integra
 
 
 ### Testing
-| Test Cases | Expected Output | Observed behaviour |
-|------------|-----------------|--------------------|
-|Button press every 2 seconds|The LED's lit up consectutively in a clockwise direction once every 2 seconds| ...|
-|Reset button press|The program reset and the chase pattern began again at the initial LED| ... |
-|Several button presses in quick succession|The timer works and the LED's update once every 2 seconds| ... |
+| Test Cases | Expected Output |
+|------------|-----------------|
+|Button press every 2 seconds|The LED's lit up consectutively in a clockwise direction once every 2 seconds|
+|Reset button press|The program reset and the chase pattern began again at the initial LED|
+|Several button presses in quick succession|The timer works and the LED's update once every 2 seconds|
 
 
 ### Notes
@@ -413,32 +413,54 @@ If needed, the baud rate can be changed in main.c by modifying the global baud_r
 To send a command, type your string in the terminal and press Enter. The system will respond based on the input and execute the corresponding action.
 
 ### Functions and modularity
+The command handling system is divided into clearly defined, modular functions across multiple files, promoting readability and maintainability. These functions work together to parse user input, validate it, and trigger the appropriate module (LED, Serial, or Timer). Below is an overview of how each function contributes to the system:
+
+#### getCommandType(const uint8_t *input)
+This function extracts and identifies the command type from the user input string (e.g., "led 10101010" → CMD_LED). It parses the first word of the input and returns an enum CommandType corresponding to recognized commands (led, serial, oneshot, timer). If the command is unrecognized, it returns CMD_UNKNOWN.
+
+#### isValidOperand(const char *command, const char *operand)
+This function validates the format and value of an operand based on the type of command. For led, ensures exactly 8 binary digits (0 or 1). For oneshot and timer, ensures it's a numeric value and meets minimum timing constraints (≥1 for oneshot, ≥2 for timer). For unknown cases, allows only numeric strings.
+
+#### getCommand(const uint8_t *input)
+This function parses and validates the operand from the input string. It splits input into command and operand. Then it calls isValidOperand() to check the operand. If valid, returns it as a uint32_t, for led, converts binary string to integer. For timer and oneshot, converts to decimal. If invalid, sends an error message over USART1 and returns 0.
+
+#### getStringOperand(const uint8_t *input)
+This function extracts and outputs the string portion of a serial command. It finds the first space in the input. Then treats the remaining part of the string as the operand/message. Finally it outputs it to the serial port (USART1). If no message is found, sends an error prompt.
+
+#### handleCommand(const uint8_t *input, SerialPort *port)
+This function orchestrates the execution of commands based on user input. It calls getCommandType() to determine the command. Based on the command type, it dispatches to:
+- dio_set_leds() for setting LED patterns
+- getStringOperand() for serial echo
+- timerOneshot() for a one-time delayed LED flash
+- timerPeriodic() for repeated LED flashes at intervals
+
+If the command is unknown, it notifies the user via the serial port.
 
 ### Testing
 The user command module has been rigorously tested with the following valid input:
 
-| Valid Test Cases | Expected Output | Output Met Requirements |
-|------------------|-----------------|-------------------------|
-| "led 10011001" | Lights up the LEDs in the specified pattern | Yes |
-| "serial This is a message" | The string "This is a message" gets printed on the serial monitor output | Yes |
-| "serial 123i9013i0$W%T%" | The string correctly gets printed on the serial monitor output | Yes |
-| "oneshot 2000" | Triggers the LED's to flash 2 seconds later | Yes |
-| "oneshot 0" | The LED's won't flash | Yes |
-| "timer 3000" | Triggers the LED's to flash once every 3 seconds | Yes |
-| "timer 0001" | Will have no flashing  | Yes |
+| Valid Test Cases | Expected Output |
+|------------------|-----------------|
+| "led 10011001" | Lights up the LEDs in the specified pattern |
+| "serial This is a message" | The string "This is a message" gets printed on the serial monitor output |
+| "serial 123i9013i0$W%T%" | The string correctly gets printed on the serial monitor output |
+| "oneshot 2000" | Triggers the LED's to flash 2 seconds later |
+| "oneshot 0" | The LED's won't flash |
+| "timer 3000" | Triggers the LED's to flash once every 3 seconds |
+| "timer 0001" | Will have no flashing  |
 
 The module was then tested with the following edge cases and invalid input to ensure the program exits gracefully when encountering an error:
 
-| Invalid Test Cases | Expected Output | Output Met Requirements |
-|--------------------|-----------------|-------------------------|
-| "led" | Print error message to structure the command properly | Yes |
-| "serial" | Print error to add a message after serial command | Yes |
-| "oneshot" | Print error message to structure the command properly | Yes |
-| "timer" | Print error message to structure the command properly | Yes |
-| "1000 timer" | Print error message for unknown command | Yes |
-| "dfnakfwaojo" | Print error message for unknown command | Yes |
-| "timer sdasdfsd" | Triggers a debugging LED flash to warn of no period | Yes |
-| "timer 0" | Triggers a debugging LED flash to warn of no period | Yes |
+| Invalid Test Cases | Expected Output |
+|--------------------|-----------------|
+| "led" | Print error message to structure the command properly |
+| "serial" | Print error to add a message after serial command |
+| "oneshot" | Print error message to structure the command properly |
+| "timer" | Print error message to structure the command properly |
+| "1000 timer" | Print error message for unknown command |
+| "dfnakfwaojo" | Print error message for unknown command |
+| "timer sdasdfsd" | Triggers a debugging LED flash to warn of no period |
+| "timer 0" | Triggers a debugging LED flash to warn of no period |
 
 ---
 
