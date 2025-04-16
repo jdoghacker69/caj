@@ -228,21 +228,14 @@ To send a command, type your string in the terminal and press Enter. The system 
 ### Functions and modularity
 
 ### Testing
-The command parser currently supports the following valid input:
+The user command module has been rigorously testing with the following valid input:
 
-led chase – Starts a LED chase pattern using timer callbacks.
-
-led set 0xAA – Directly sets the LED output pattern using a hex value.
-
-echo Hello! – Sends back the string “Hello!” over the UART.
-
-timer oneshot 3000 – Triggers a one-time event 3 seconds later.
-
-timer periodic 2000 – Begins a repeated event every 2 seconds.
-
-All commands must end with a newline or carriage return to be accepted.
-| Test Cases | Expected Output | Observed behaviour |
-|------------|-----------------|--------------------|
+| Valid Test Cases | Expected Output | Output Behaved Correctly |
+|------------------|-----------------|--------------------------|
+| "led 10011001" | Lights up the LEDs in the specified pattern | Yes |
+| "serial This is a message" | The string "This is a message" gets printed on the serial monitor output | Yes |
+| "oneshot 2000" | Triggers the LED's to flash 2 seconds later | Yes |
+| "timer 3000" | Triggers the LED's to flash once every 3 seconds | Yes |
 
 ### Notes
 
