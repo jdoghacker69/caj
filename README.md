@@ -122,7 +122,7 @@ The timer module is isolated to the 'timer.c/h' files, making it easy to integra
 ## **Exercise 2 - String transmission, reception, and port forwarding**
 
 <details>
-  <summary><strong>### Summary</strong></summary>
+  <summary><strong>Summary</strong></summary>
 
 This module demonstrates UART serial communication on an STM32 microcontroller using interrupts. The system continuously receives characters into a buffer until a terminating character (newline or carriage return) is encountered. Once a complete string is assembled, the code echoes it back via UART and triggers a user-defined callback with a pointer to the received string and the transmitted byte count. Additionally, a basic double-buffering scheme for non-blocking serial transmission is implemented, allowing new data to be queued during an ongoing transmission, additionally saving space and processing power.
 
