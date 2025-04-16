@@ -121,22 +121,199 @@ The timer module is isolated to the 'timer.c/h' files, making it easy to integra
 
 ## **Exercise 2 - String transmission, reception, and port forwarding**
 
-### Summary
-Implements UART communication with interrupt-driven reception and transmission. Input strings are read into a buffer until a terminating character is found. Upon completion, a callback is triggered with a pointer to the received string and its length.
+<details>
+  <summary><strong>### Summary</strong></summary>
 
-### Usage
+This module demonstrates UART serial communication on an STM32 microcontroller using interrupts. The system continuously receives characters into a buffer until a terminating character (newline or carriage return) is encountered. Once a complete string is assembled, the code echoes it back via UART and triggers a user-defined callback with a pointer to the received string and the transmitted byte count. Additionally, a basic double-buffering scheme for non-blocking serial transmission is implemented, allowing new data to be queued during an ongoing transmission, additionally saving space and processing power.
 
-### Valid input
+</details>
 
-### Functions and modularity
+<details>
+  <summary><strong>Usage</strong></summary>
 
-### Testing
-| Test Cases | Expected Output | Observed behaviour |
-|------------|-----------------|--------------------|
+#### Valid Input
+- **Strings:** Input strings must be terminated by a newline (`\n`) or carriage return (`\r`).
+- **Example:** Sending `"start\r\n"` is recognized as a complete command and will trigger the special processing routine.
 
-### Notes
+#### How to Use:
+1. **Build and Flash the Code:**
+   - Import the project (including `main.c`, `serial.c`, `serial.h`, and supporting files) into STM32CubeIDE.
+   - Compile the project for the STM32F303 microcontroller.
+   - Flash the code to the target board using ST-Link or your preferred programmer.
+
+2. **Terminal Setup:**
+   - Connect the STM32F303 Discovery Board via USB.
+   - Open your terminal emulator - CuteCom for Linux/macOS and PuTTY for Windows using the following settings:
+
+     | **Setting**  | **Value**  |
+     |--------------|------------|
+     | Baud Rate    | 115200     |
+     | Data Bits    | 8          |
+     | Stop Bits    | 1          |
+     | Parity       | None       |
+
+3. **Operation:**
+   - The module echoes received strings over UART using a double-buffered transmit routine.
+   - If the received string matches `"start"`, a special message is output and the example code shape demo is triggered.
+
+</details>
+
+<details>
+  <summary><strong>Core Functions and Modularity</strong></summary>
+
+#### Key Functions
+
+##### `SerialInitialise()`
+Initialises the USART peripheral and associated GPIOs.
+
+> **Function Prototype:**  
+> `void SerialInitialise(uint32_t baudRate, SerialPort *serial_port, void (*completion_function)(uint32_t));`
+
+> **Code : initialisation function:**
+> ```c
+> void SerialInitialise(uint32_t baudRate, SerialPort *serial_port, void (*completion_function)(uint32_t)) {
+>     serial_port->completion_function = completion_function;
+> 
+>     // Enable essential clocks
+>     RCC->APB1ENR |= RCC_APB1ENR_PWREN;
+>     RCC->APB2ENR |= RCC_APB2ENR_SYSCFGEN;
+>     RCC->AHBENR  |= RCC_AHBENR_GPIOCEN;
+>     RCC->APB2ENR |= RCC_APB2ENR_USART1EN;
+> 
+>     // Configure GPIO pins for alternate function mode
+>     RCC->AHBENR |= serial_port->MaskAHBENR;
+>     serial_port->GPIO->MODER = serial_port->SerialPinModeValue;
+>     serial_port->GPIO->OSPEEDR = serial_port->SerialPinSpeedValue;
+>     serial_port->GPIO->AFR[0] |= serial_port->SerialPinAlternatePinValueLow;
+>     serial_port->GPIO->AFR[1] |= serial_port->SerialPinAlternatePinValueHigh;
+> 
+>     // Enable USART interrupts (RXNE and TXE)
+>     serial_port->UART->CR1 |= USART_CR1_RXNEIE;
+>     serial_port->UART->CR1 |= USART_CR1_TXEIE;
+> 
+>     // Enable additional peripheral clocks if needed
+>     RCC->APB1ENR |= serial_port->MaskAPB1ENR;
+>     RCC->APB2ENR |= serial_port->MaskAPB2ENR;
+> 
+>     // Configure baud rate (placeholder values; update as needed)
+>     uint16_t *baud_rate_config = (uint16_t*)&serial_port->UART->BRR;
+>     switch (baudRate) {
+>         case BAUD_115200:
+>             *baud_rate_config = 0x46;  // 115200 at 8MHz
+>             break;
+>         // Other baud rates: NEED TO FIX THIS!
+>         default:
+>             *baud_rate_config = 0x46;
+>     }
+> 
+>     // Enable transmitter, receiver, and USART
+>     serial_port->UART->CR1 |= USART_CR1_TE | USART_CR1_RE | USART_CR1_UE;
+> }
+> ```
 
 ---
+
+##### `USART1_EXTI25_IRQHandler()`
+Handles UART interrupts for both RX and TX. This function:
+- Reads received characters into a buffer until a terminating character is detected.
+- Echoes the complete string back over UART.
+- Checks for the special command `"start"` and sets a flag to trigger further processing.
+- Manages double-buffered transmission.
+
+> **Code Snippet (Reception & Command Processing):**
+> ```c
+> void USART1_EXTI25_IRQHandler(void) {
+>     // Check for framing or overrun errors and clear them
+>     if ((USART1->ISR & USART_ISR_FE_Msk) || (USART1->ISR & USART_ISR_ORE_Msk)) {
+>         USART1->ICR = USART_ICR_FECF | USART_ICR_ORECF;
+>         return;
+>     }
+> 
+>     // RXNE: Process received characters
+>     if (USART1->ISR & USART_ISR_RXNE) {
+>         while (SerialInputAvailable(&USART1_PORT)) {
+>             uint8_t c = SerialReadChar(&USART1_PORT);
+>             if (string_index < MAX_BUFFER_LENGTH - 1) {
+>                 received_string[string_index++] = c;
+>                 if (c == '\n' || c == '\r') {
+>                     received_string[string_index - 1] = '\0';
+>                     input_received_flag = 1;
+>                 }
+>             } else {
+>                 string_index = 0;
+>             }
+>         }
+>     }
+> 
+>     // Process a complete string if available
+>     if (input_received_flag == 1) {
+>         SerialOutputStringDB((uint8_t *)received_string, &USART1_PORT);
+>         if (is_start_command(received_string) == 1) {
+>             uint8_t response[] = "\n--SECRET-- Command START received.\n";
+>             SerialOutputStringDB(response, &USART1_PORT);
+>             start_flag = 1;
+>         }
+>         string_index = 0;
+>         input_received_flag = 0;
+>         memset((void*)received_string, 0, MAX_BUFFER_LENGTH);
+>     }
+> 
+>     // TX interrupt handling (double-buffered) is managed below.
+> }
+> ```
+
+---
+
+##### `SerialOutputStringDB()`
+Implements the double-buffered transmit mechanism. It:
+- Appends the string to a fill buffer.
+- If no transmission is active, swaps the fill and transmit buffers.
+- Initiates transmission by enabling the TXE interrupt.
+- Ensures new data is queued without blocking.
+
+> **Code Snippet:**
+> ```c
+> void SerialOutputStringDB(uint8_t *pt, SerialPort *serial_port) {
+>     __disable_irq();
+> 
+>     // Append data into the fill buffer until termination or full buffer
+>     while (*pt && fill_index < (DB_BUFFER_SIZE - 1)) {
+>         fill_buffer[fill_index++] = *pt++;
+>     }
+>     fill_buffer[fill_index] = '\0'; // Null-terminate the fill buffer
+> 
+>     // If not transmitting, swap buffers and start transmission
+>     if (!is_transmitting) {
+>         uint8_t *temp = fill_buffer;
+>         fill_buffer = transmit_buffer;
+>         transmit_buffer = temp;
+>         transmit_length = fill_index;
+>         fill_index = 0;
+>         transmit_index = 0;
+>         is_transmitting = 1;
+>         serial_port->UART->CR1 |= USART_CR1_TXEIE;
+>     }
+> 
+>     __enable_irq();
+> }
+> ```
+
+</details>
+
+<details>
+  <summary><strong>Testing</strong></summary>
+
+#### Test Cases
+
+| **Test Case**                               | **Expected Output**                                                              | **Observed Behaviour**                                          |
+|---------------------------------------------|----------------------------------------------------------------------------------|-----------------------------------------------------------------|
+| **Transmit Single Character**               | Each character transmits without delay.                                          | Verified via oscilloscope/terminal output.                      |
+| **Receive Complete String ("Hello\r\n")**   | The complete string `"Hello"` is echoed over UART.                               | String correctly received and echoed.                           |
+| **Command Detection ("start\r\n")**         | Outputs `"--SECRET-- Command START received."` and triggers demo functionality.   | Command correctly recognized; demo executed.                    |
+| **Double-Buffered Transmission**            | New messages are queued and transmitted without blocking the ongoing transmission.| Data successfully queued and transmitted in sequence.           |
+| **Error Handling (Framing/Overrun)**        | Clears error flags and maintains system responsiveness.                          | No unexpected faults; error conditions handled gracefully.      |
+
+</details>
 
 ## **Exercise 3 - Implementing precise delays and event handling**
 
