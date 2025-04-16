@@ -25,7 +25,13 @@ Modules:
 
 The following flowchart diagrams give an overview of the integration exercise that uses all modules as submodules:
 
-[insert flowcharts here once made in draw.io]
+![Flowchart showing main processing logic](images/flowchart_main.png)
+
+![Flowchart showing led_submodule logic](images/flowchart_led.png)
+![Flowchart showing serial_submodule logic](images/flowchart_serial.png)
+![Flowchart showing oneshot_submodule logic](images/flowchart_oneshot.png)
+![Flowchart showing timer_submodule logic](images/flowchart_timer.png)
+
 
 ---
 
