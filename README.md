@@ -58,20 +58,26 @@ This git repository must be cloned onto your device. Open STM32CubeIDE and impor
 ---
 
 ## **Exercise 1 - LED control and button handling**
+</details>
 
-### Summary
+<details>
+  <summary><strong> Summary</strong></summary>
 This module handles user input via a button and controls the onboard LEDs. A function pointer allows users to register custom behaviour on button press. LED states are managed internally and can only be modified through getter/setter functions exposed in the header file.
 
+</details>
 
-### Usage
+<details>
+<summary><strong> Usage</strong></summary>
 Once the code has been downloaded onto the board, the user can press the button and expect an LED to light up. Subsequent button presses will cause the same LED to switch off and the next LED to light up. The LEDs will light up one at a time in a clockwise direction around the board. However, the button can not be spammed, as there is a short timer that prevents the button press being recognised until its up, so the button can only update the LED once every 2 seconds. 
 
 To adjust the starting LED go to the ‘diode.c’ file and change the 'led_state' variable to whichever hex number that represents the LED you want to be the first switched on. The default value is zero, so there will initially be no LED on but if the value was '0x02' for example, the second LED (red) will be on at startup. 
 
 To change the time allowed between button presses go to the 'timer.c' file and adjust the auto-reload register (ARR) of the timer TIM2, 'TIM2->ARR', to your desired time buffer. It's default is 2000 ms.
 
+</details>
 
-### Functions and modularity
+<details>
+<summary><strong> Functions and modularity</strong></summary>
 The diode module is isolated to the 'diode.c/h' files, making it easy to integrate into other projects. The following is a description on what each function does and how they're dependent on each other. Note that the 'button_callback' function is defined in the 'main.c' file using the 'my_button_handler' function. 
 
 #### void my_button_handler(void)
@@ -112,17 +118,18 @@ The timer module is isolated to the 'timer.c/h' files, making it easy to integra
 #### void timer2_set_callback(void (*callback)(void));
 - The timer2_set_callback function registers a callback to be called on every TIM2 update event
 
+</details>
 
-### Testing
+<details>
+<summary><strong> Testing</strong></summary>
+
+
 | Test Cases | Expected Output |
 |------------|-----------------|
 |Button press every 2 seconds|The LED's lit up consectutively in a clockwise direction once every 2 seconds|
 |Reset button press|The program reset and the chase pattern began again at the initial LED|
 |Several button presses in quick succession|The timer works and the LED's update once every 2 seconds|
-
-
-### Notes
-
+</details>
 ---
 
 ## **Exercise 2 - String transmission, reception, and port forwarding**
@@ -322,14 +329,19 @@ Implements the double-buffered transmit mechanism. It:
 </details>
 
 ## **Exercise 3 - Implementing precise delays and event handling**
+</details>
 
-### Summary
+<details>
+<summary><strong> Summary</strong></summary>
+
 A timer module that provides a hardware timer interface that is capable of triggering periodic and oneshot events with the use of function pointers in callback functions. This module is designed to run independently, and to be attached on to other modules. It utilises two STM32F303 hardware timers to schedule and trigger code at inputted intervals.
 - TIM2 is used for periodic callbacks. These are events that should occur repeatedly, such as blinking leds, or updating a variable.
 - TIM3 is used for oneshot callbacks. These are events that should only occur once, such as triggering an LED after a specified delay, or responding to an input.
 Both of these timers have been configured to run on millisecond precision and use internal state and callback function pointers, which makes them modular and easy to coalesce.
+</details>
 
-### Usage
+<details>
+<summary><strong> Usage</strong></summary>
 The code must be downloaded and integrated into the workspace of the main project. Then the timer module must be set up. Both of the timer peripherals must be enabled.
 - enable_periodic_clock();
 - enable_oneshot_clock()
@@ -343,12 +355,16 @@ Where "callback" should be replaced with the function you wish to call. (E.g. le
 The time between function triggers can be adjusted by changing uint32_t ms value that inputted into the periodic and oneshot timers. This module can be combined with a module that utilises serial ports and usart/uart to allow the user to input a sentence that is read and translated into a value that can be passed through the periodic and oneshot timers as a millisecond value.
 
 Similarly, the callback function can be replaced with any function that the user wishes to run after a delay.
+</details>
 
-### Valid input
+<details>
+<summary><strong> Valid input</strong></summary>
 - any positive integer delay value for ms, noting that it is taken in milliseconds.
 - any valid function pointer of type void (*callback)(void).
+</details>
 
-### Functions and modularity
+<details>
+<summary><strong> Functions and modularity </strong></summary> 
 The timer module is isolated to the timer_module.c/h files. Independent timers are used for the periodic and oneshot modes. Key functions include:
 
 static void trigger_prescaler(TIM_TypeDef *TIMx)
@@ -381,8 +397,11 @@ void TIM2_IRQHandler(void)
 void TIM3_IRQHandler(void)
 - Handles the interrupt process for TIM3.
 - Elicits the user-defined oneshot callback function.
+</details>
 
-### Testing
+<details>
+<summary><strong> Testing</strong></summary>
+
 | Test Cases | Expected Output | Observed behaviour |
 |------------|-----------------|--------------------|
 |timer_init(1000, led_blink_sequence)|The lit-up LED should circle around the board, updating every one second.|The lit-up LED circled around the board, updating every one second.|
@@ -399,20 +418,27 @@ void TIM3_IRQHandler(void)
 ---
 
 ## **Exercise 4 - Integration**
+</details>
 
-### Summary
+<details>
+<summary><strong> Summary</strong></summary>
+
 The integration exercise brings together the functionality of the previous modules—Digital I/O, Serial Communication, and Timer Interface—into a complete real-time embedded system. The core loop of the program constantly checks for incoming serial input using UART and processes commands in real-time without blocking delays. These commands can control LED patterns, print messages over serial, or trigger timed operations using the hardware timers. Each module remains self-contained and communicates through clear APIs and function pointers to maintain modularity.
 
 The system reacts to complete input lines terminated by newline (\n) or carriage return (\r) characters. Once received, the string is parsed and dispatched using handleCommand() (from user_command.c), which interprets the command and calls the appropriate module-level function. This design allows for concurrent operations like LED updates and timed callbacks while still accepting user input in real time.
+</details>
 
-### Usage
+<details>
+<summary><strong> Usage</strong></summary>
 Once flashed onto the STM32F3 board, the system is ready to accept user commands over UART1. You can use CuteCom (Linux/macOS) or PuTTY (Windows) to open a terminal at the settings specified in the **Installation & Usage Instructions** section. 
 
 If needed, the baud rate can be changed in main.c by modifying the global baud_rate variable before calling SerialInitialise().
 
 To send a command, type your string in the terminal and press Enter. The system will respond based on the input and execute the corresponding action.
+</details>
 
-### Functions and modularity
+<details>
+<summary><strong> Functions And Modularity</strong></summary>
 The command handling system is divided into clearly defined, modular functions across multiple files, promoting readability and maintainability. These functions work together to parse user input, validate it, and trigger the appropriate module (LED, Serial, or Timer). Below is an overview of how each function contributes to the system:
 
 #### getCommandType(const uint8_t *input)
@@ -435,8 +461,10 @@ This function orchestrates the execution of commands based on user input. It cal
 - timerPeriodic() for repeated LED flashes at intervals
 
 If the command is unknown, it notifies the user via the serial port.
+</details>
 
-### Testing
+<details>
+<summary><strong> Testing</strong></summary>
 The user command module has been rigorously tested with the following valid input:
 
 | Valid Test Cases | Expected Output |
@@ -461,7 +489,7 @@ The module was then tested with the following edge cases and invalid input to en
 | "dfnakfwaojo" | Print error message for unknown command |
 | "timer sdasdfsd" | Triggers a debugging LED flash to warn of no period |
 | "timer 0" | Triggers a debugging LED flash to warn of no period |
-
+</details>
 ### Notes
 - The serial buffer has a fixed size of 100 characters—input lines longer than this are discarded.
 - The system uses a simple string parser and is case-sensitive.
